@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Mambiances</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="search_hint">Search Places</string>
+    <string name="search_settings">Search Places</string>
+    <string name="title_activity_ambiance_lieu">AmbianceLieu</string>
+    <string name="shortDescrLieu">Le nid</string>
+    <string name="nomLieu">Le nid</string>
+    <string name="typeLieu">Bar</string>
+    <string name="monMot1">Mot 1 </string>
+    <string name="monMot2">Mot 2 </string>
+    <string name="monMot3">Mot 3 </string>
+    <string name="nomCurseurAffiche">Curseur affiché</string>
+    <string name="motPop1">Mot Pop1</string>
+    <string name="motPop2">Mot Pop2</string>
+    <string name="motPop3">Mot Pop3</string>
+    <string name="title_activity_liste_lieux">ListeLieux</string>
+    
+    <string-array 
+        name="listeLieux">
+        <item name="Lieu1"></item>
+        <item name="adresse1"></item>
+        <item name="Lieu2"></item>
+        <item name="adresse2"></item>
+        <item name="Lieu3"></item>
+        <item name="adresse3"></item>
+        <item name="Lieu4"></item>
+        <item name="adresse4"></item>
+        <item name="Lieu5"></item>
+        <item name="adresse5"></item>
+        <item name="Lieu6"></item>
+        <item name="adresse6"></item>
+        <item name="Lieu7"></item>
+        <item name="adresse7"></item>
+        <item name="Lieu8"></item>
+        <item name="adresse8"></item>
+        <item name="Lieu9"></item>
+        <item name="adresse9"></item>
+        <item name="Lieu10"></item>
+        <item name="adresse10"></item>
+        <item name="Lieu11"></item>
+        <item name="adresse11"></item>
+        <item name="Lieu12"></item>
+        <item name="adresse12"></item>
+        <item name="Lieu13"></item>
+        <item name="adresse13"></item>
+        <item name="Lieu14"></item>
+        <item name="adresse14"></item>
+        <item name="Lieu15"></item>
+        <item name="adresse15"></item>
+        <item name="Lieu16"></item>
+        <item name="adresse16"></item>
+        <item name="Lieu17"></item>
+        <item name="adresse17"></item>
+        <item name="Lieu18"></item>
+        <item name="adresse18"></item>
+        <item name="Lieu19"></item>
+        <item name="adresse19"></item>
+        <item name="Lieu20"></item>
+        <item name="adresse20"></item>
+    </string-array>
+
+</resources>

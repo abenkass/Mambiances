@@ -1,0 +1,20 @@
+02-11 19:04:06.818: D/dalvikvm(9475): GC_CONCURRENT freed 316K, 9% free 18134K/19920K, paused 21ms+6ms, total 46ms
+02-11 19:04:06.818: D/dalvikvm(9475): WAIT_FOR_CONCURRENT_GC blocked 16ms
+02-11 19:04:07.238: D/dalvikvm(9475): GC_CONCURRENT freed 1829K, 15% free 18261K/21236K, paused 10ms+7ms, total 55ms
+02-11 19:04:07.268: E/Google Maps Android API(9475): Authorization failure.  Please see https://developers.google.com/maps/documentation/android/start for how to correctly set up the map.
+02-11 19:04:07.278: E/Google Maps Android API(9475): Ensure that the following correspond to what is in the API Console: Package Name: com.pappl.mambiances, API Key: AIzaSyDKA7C6p52ac6msVk2dl5Gs8Fp0OZ7Cdts, Certificate Fingerprint: 61E861607D6F76639112CC53F4B48CC33727191D
+02-11 19:04:07.298: I/Google Maps Android API(9475): Failed to contact Google servers. Another attempt will be made when connectivity is established.
+02-11 19:04:10.882: D/AbsListView(9475): unregisterIRListener() is called 
+02-11 19:04:10.952: D/AbsListView(9475): unregisterIRListener() is called 
+02-11 19:04:12.223: D/dalvikvm(9475): GC_CONCURRENT freed 411K, 15% free 18240K/21236K, paused 2ms+2ms, total 31ms
+02-11 19:04:15.746: D/AbsListView(9475): unregisterIRListener() is called 
+02-11 19:04:15.977: D/AbsListView(9475): onVisibilityChanged() is called, visibility : 8
+02-11 19:04:15.977: D/AbsListView(9475): unregisterIRListener() is called 
+02-11 19:04:15.987: D/AbsListView(9475): onDetachedFromWindow
+02-11 19:04:15.987: D/AbsListView(9475): unregisterIRListener() is called 
+02-11 19:04:17.078: D/dalvikvm(9475): GC_CONCURRENT freed 392K, 15% free 18243K/21236K, paused 6ms+2ms, total 62ms
+02-11 19:04:17.078: D/AbsListView(9475): [unregisterDoubleTapMotionListener]
+02-11 19:04:17.088: I/MotionRecognitionManager(9475):   .unregisterListener : / listener count = 0->0,  
+02-11 19:04:17.088: D/AbsListView(9475): unregisterIRListener() is called 
+02-11 19:04:22.503: E/Google Maps Android API(9475): Failed to load map. Error contacting Google servers. This is probably an authentication issue (but could be due to network errors).
+02-11 19:04:22.513: D/dalvikvm(9475): GC_CONCURRENT freed 1258K, 13% free 17374K/19916K, paused 4ms+6ms, total 42ms

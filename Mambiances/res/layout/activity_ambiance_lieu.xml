@@ -1,0 +1,162 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".AmbianceLieu" >
+
+    <ImageView
+        android:id="@+id/imageLieu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/shortDescrLieu"
+        android:src="@drawable/le_nid" />
+    
+    <View
+    	android:layout_width="fill_parent"
+    	android:layout_height="1dp"
+    	android:background="@android:color/darker_gray"/>
+    
+    <TextView 
+        android:id="@+id/nomLieu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:text="@string/nomLieu"
+        android:textSize="24sp"/>"
+    "
+    <TextView 
+        android:id="@+id/typeLieu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:text="@string/typeLieu"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+    
+    <View
+    	android:layout_width="fill_parent"
+    	android:layout_height="1dp"
+    	android:background="@android:color/darker_gray"/>
+    
+    <LinearLayout
+        android:id="@+id/monAmbiance"
+        android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical">
+	    
+	    <LinearLayout
+	        android:id="@+id/mesMots"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center">
+	        
+	        <TextView 
+	        android:id="@+id/monMot1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:text="@string/monMot1"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/monMot2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:text="@string/monMot2"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/monMot3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:text="@string/monMot3"
+	        android:textSize="16sp"/>
+	        
+	    </LinearLayout>
+	    <LinearLayout 
+	        android:id="@+id/mesCurseurs"
+	        android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:orientation="vertical">
+	        
+	        <TextView 
+		        android:id="@+id/nomCurseurAffiche"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:textAlignment="viewStart"
+		        android:text="@string/nomCurseurAffiche"
+		        android:textSize="16sp"
+		        android:gravity="center"/>
+	        
+	        <SeekBar 
+	            android:id="@+id/curseurAffiche"
+	            android:progress="@integer/progCurseurAffiche"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"
+	            android:gravity="center"/>	        
+	        
+	    </LinearLayout>"
+    </LinearLayout>
+  
+    <View
+    	android:layout_width="fill_parent"
+    	android:layout_height="1dp"
+    	android:background="@android:color/darker_gray"/>
+  
+    <LinearLayout
+	        android:id="@+id/motsPopulaires"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center">
+	        
+	        <TextView 
+	        android:id="@+id/motPop1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:text="@string/motPop1"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motPop2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:text="@string/motPop2"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motPop3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:text="@string/motPop3"
+	        android:textSize="16sp"/>
+	        
+	    </LinearLayout>
+</LinearLayout>
