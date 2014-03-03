@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,9 +34,12 @@ import android.widget.SimpleAdapter;
 public class ListeLieux extends Activity {
 	
 	//début de getLocation
-	private String[][] lieuxAdresses;
+	private static String[][] lieuxAdresses = new String[20][2];
 	
 	private LocationManager locMan;
+	
+	private List<HashMap<String, String>> liste = new ArrayList<HashMap<String, String>>();
+	
 	
 	private class GetPlaces extends AsyncTask<String, Void, String> {
 		//fetch and parse place data
@@ -71,7 +77,7 @@ public class ListeLieux extends Activity {
 			}
 			return placesBuilder.toString();
 		}
-	
+		@Override
 		protected void onPostExecute(String result) {
 		    //parse place data returned from Google Places
 			if(lieuxAdresses!=null){
@@ -111,14 +117,13 @@ public class ListeLieux extends Activity {
 					}
 					else
 					    lieuxAdresses[p][0] = placeName;
-						lieuxAdresses[p][1] = vicinity;
-						
+						lieuxAdresses[p][1] = vicinity;	
 				}
 			}
 			catch (Exception e) {
 			    e.printStackTrace();
 			}
-
+		
 		}
 		
 	}
@@ -140,11 +145,17 @@ public class ListeLieux extends Activity {
 			    "&radius=100&sensor=true" +
 			    "&key=AIzaSyDDRWm2cBS4tRli0Oo0DHnIaeqPsFYCgEY";
 	    
+	    
+	    
 	    new GetPlaces().execute(placesNearby);
 	    
 	    final ListView listView = (ListView) findViewById(R.id.listeLieux);
 	    
-	    List<HashMap<String, String>> liste = new ArrayList<HashMap<String, String>>();
+	    HashMap<String, String> element1;
+	    element1 = new HashMap<String, String>();
+		element1.put("Nom", "Maison");
+		element1.put("Adresse", "Chez moi");
+	    liste.add(element1);
 	    
 	    HashMap<String, String> element;
 	    for(int i = 0 ; i < lieuxAdresses.length ; i++) {
@@ -164,6 +175,7 @@ public class ListeLieux extends Activity {
 	    listView.setAdapter(adapter);
 	    
 	}
+	
 
 
 }
