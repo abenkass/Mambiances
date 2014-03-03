@@ -68,15 +68,15 @@ public class LocalDataSource {
 		/**
 		 * close the database, need to be called to avoid any issue on the database treatment
 		 */
-		public void close(){
+		/*public void close(){
 			dbHelper.close();
-		}
+		}*/
 		
 		/**
 		 * create a Marqueur
 		 * 
 		 */
-		public Marqueur createMarqueur()
+		/*public Marqueur createMarqueur()*/
 		
 		/**
 		 * update a Marqueur
