@@ -185,7 +185,7 @@ public class Marqueur {
 		 * method to save the Marqueur in the Database
 		 * @param datasource is the Localdatasource of which Marqueur is a table
 		 */
-		public abstract void saveToLocal(LocalDataSource datasource);
+		//public abstract void saveToLocal(LocalDataSource datasource);
 		
 		/**
 		 * method to delete a Marqueur form the Database
