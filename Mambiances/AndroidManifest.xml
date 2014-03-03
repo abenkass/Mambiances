@@ -71,6 +71,10 @@
             android:name="com.pappl.mambiances.ListeLieux"
             android:label="@string/title_activity_liste_lieux" >
         </activity>
+        <activity
+            android:name="com.pappl.mambiances.SaisieMarqueur"
+            android:label="@string/title_activity_saisie_marqueur" >
+        </activity>
     </application>
 
 </manifest>

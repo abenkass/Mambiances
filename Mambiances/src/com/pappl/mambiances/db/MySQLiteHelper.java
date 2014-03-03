@@ -188,7 +188,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table MARQUEUR
 	 */
 	private static final String 
-				DATABASE_CREATE = 		
+				DATABASE_CREATE1 = 		
 					"create table "
 					+ TABLE_MARQUEUR + " (" 
 					+ COLUMN_MARQUEURID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -206,7 +206,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table CURSEUR
 	 */
 	private static final String 
-				DATABASE_CREATE1 = 		
+				DATABASE_CREATE2 = 		
 					"create table "
 					+ TABLE_CURSEUR + " (" 
 					+ COLUMN_CURSEURID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -219,7 +219,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table MOT
 	 */
 	private static final String 
-				DATABASE_CREATE2 = 		
+				DATABASE_CREATE3 = 		
 					"create table "
 					+ TABLE_MOT + " (" 
 					+ COLUMN_MOTID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -230,7 +230,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table IMAGE
 	 */
 	private static final String 
-				DATABASE_CREATE3 = 		
+				DATABASE_CREATE4 = 		
 					"create table "
 					+ TABLE_IMAGE + " (" 
 					+ COLUMN_IMAGEID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -242,7 +242,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table PLACES
 	 */
 	private static final String 
-				DATABASE_CREATE4 = 		
+				DATABASE_CREATE5 = 		
 					"create table "
 					+ TABLE_PLACES + " (" 
 					+ COLUMN_PLACESID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -257,7 +257,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table ADRESSE
 	 */
 	private static final String 
-				DATABASE_CREATE5 = 		
+				DATABASE_CREATE6 = 		
 					"create table "
 					+ TABLE_ADRESSE + " (" 
 					+ COLUMN_ADRESSEID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -272,7 +272,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table AMBIANCEMOT
 	 */
 	private static final String 
-				DATABASE_CREATE6 = 		
+				DATABASE_CREATE7 = 		
 					"create table "
 					+ TABLE_AMBIANCEMOT + " (" 
 					+ COLUMN_AMBIANCEMOTID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -285,7 +285,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table AMBIANCECURSEUR
 	 */
 	private static final String 
-				DATABASE_CREATE7 = 		
+				DATABASE_CREATE8 = 		
 					"create table "
 					+ TABLE_AMBIANCECURSEUR + " (" 
 					+ COLUMN_AMBIANCECURSEURID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -299,7 +299,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table UTILISATEUR
 	 */
 	private static final String 
-				DATABASE_CREATE8 = 		
+				DATABASE_CREATE9 = 		
 					"create table "
 					+ TABLE_UTILISATEUR + " (" 
 					+ COLUMN_UTILISATEURID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -312,7 +312,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table PARAMETRES
 	 */
 	private static final String 
-				DATABASE_CREATE9 = 		
+				DATABASE_CREATE10 = 		
 					"create table "
 					+ TABLE_PARAMETRES + " (" 
 					+ COLUMN_PARAMETRESID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -324,7 +324,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table FAVORIS
 	 */
 	private static final String 
-				DATABASE_CREATE10 = 		
+				DATABASE_CREATE11 = 		
 					"create table "
 					+ TABLE_FAVORIS + " (" 
 					+ COLUMN_UTILISATEURID + " INTEGER, "
@@ -340,7 +340,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * query to create table AMIS
 	 */
 	private static final String 
-				DATABASE_CREATE11 = 		
+				DATABASE_CREATE12 = 		
 					"create table "
 					+ TABLE_AMIS + " ("
 					+ COLUMN_UTILISATEURID + " INTEGER, "
@@ -379,6 +379,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 		database.execSQL(getDatabaseCreate9());
 		database.execSQL(getDatabaseCreate10());
 		database.execSQL(getDatabaseCreate11());
+		database.execSQL(getDatabaseCreate12());
+
+
 	}
 
 
@@ -400,7 +403,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate1() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE1;
 	}
 	
 	/**
@@ -408,7 +411,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate2() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE2;
 	}
 	
 	/**
@@ -416,7 +419,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate3() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE3;
 	}
 	
 	/**
@@ -424,7 +427,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate4() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE4;
 	}
 	
 	/**
@@ -432,7 +435,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate5() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE5;
 	}
 	
 	/**
@@ -440,7 +443,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate6() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE6;
 	}
 	
 	/**
@@ -448,7 +451,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate7() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE7;
 	}
 	
 	/**
@@ -456,7 +459,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate8() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE8;
 	}
 	
 	/**
@@ -464,7 +467,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate9() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE9;
 	}
 	
 	/**
@@ -472,7 +475,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate10() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE10;
 	}
 	
 	/**
@@ -480,7 +483,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	 * @return the query as String
 	 */
 	public static String getDatabaseCreate11() {
-		return DATABASE_CREATE;
+		return DATABASE_CREATE11;
+	}
+	
+	/**
+	 * getter for createquery of related number
+	 * @return the query as String
+	 */
+	public static String getDatabaseCreate12() {
+		return DATABASE_CREATE12;
 	}
 
 
