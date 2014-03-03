@@ -25,16 +25,20 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.util.Log;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.view.*;
 
 public class ListeLieux extends Activity {
 	
 	//début de getLocation
-	private static String[][] lieuxAdresses = new String[20][2];
+	private static String[][] lieuxAdresses = new String[20][3];
 	
 	private LocationManager locMan;
 	
@@ -82,9 +86,10 @@ public class ListeLieux extends Activity {
 		    //parse place data returned from Google Places
 			if(lieuxAdresses!=null){
 			    for(int pm=0; pm<lieuxAdresses.length; pm++){
-			        if(lieuxAdresses[pm][0]!=null || lieuxAdresses[pm][0]!=null){
+			        if(lieuxAdresses[pm][0]!=null || lieuxAdresses[pm][1]!=null){
 			            lieuxAdresses[pm][0]=null;
-			        	lieuxAdresses[pm][1]=null;
+			            lieuxAdresses[pm][1]=null;
+			            lieuxAdresses[pm][2]=null;
 			        }
 			    }
 			}
@@ -98,6 +103,7 @@ public class ListeLieux extends Activity {
 					boolean missingValue=false;
 					String placeName="";
 					String vicinity="";
+					String reference="";
 					
 					try{
 					    //attempt to retrieve place data values
@@ -105,7 +111,7 @@ public class ListeLieux extends Activity {
 						JSONObject placeObject = placesArray.getJSONObject(p);
 						vicinity = placeObject.getString("vicinity");
 						placeName = placeObject.getString("name");
-						
+						reference = placeObject.getString("reference");
 					}
 					catch(JSONException jse){
 					    missingValue=true;
@@ -114,10 +120,12 @@ public class ListeLieux extends Activity {
 					if(missingValue) {
 						lieuxAdresses[p][0]=null;
 						lieuxAdresses[p][1]=null;
+						lieuxAdresses[p][2]=null;
 					}
 					else
 					    lieuxAdresses[p][0] = placeName;
-						lieuxAdresses[p][1] = vicinity;	
+						lieuxAdresses[p][1] = vicinity;
+						lieuxAdresses[p][2] = reference;
 				}
 			}
 			catch (Exception e) {
@@ -150,6 +158,7 @@ public class ListeLieux extends Activity {
 	    new GetPlaces().execute(placesNearby);
 	    
 	    final ListView listView = (ListView) findViewById(R.id.listeLieux);
+	    listView.setClickable(true);
 	    
 	    HashMap<String, String> element1;
 	    element1 = new HashMap<String, String>();
@@ -173,6 +182,14 @@ public class ListeLieux extends Activity {
 	      new String[] {"Nom", "Adresse"}, 
 	      new int[] {android.R.id.text1, android.R.id.text2 });
 	    listView.setAdapter(adapter);
+	    
+	    listView.setOnItemClickListener(new OnItemClickListener() {
+
+	    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	    	      String ref = lieuxAdresses[position][2];
+	    	      
+	    	   }
+	    	 });
 	    
 	}
 	
