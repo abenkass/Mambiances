@@ -220,23 +220,25 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_light=0x7f020018;
         public static final int green_point=0x7f020019;
         public static final int ic_action_location_found=0x7f02001a;
-        public static final int ic_action_place=0x7f02001b;
-        public static final int ic_action_search=0x7f02001c;
-        public static final int ic_launcher=0x7f02001d;
-        public static final int ic_plusone_medium_off_client=0x7f02001e;
-        public static final int ic_plusone_small_off_client=0x7f02001f;
-        public static final int ic_plusone_standard_off_client=0x7f020020;
-        public static final int ic_plusone_tall_off_client=0x7f020021;
-        public static final int le_nid=0x7f020022;
-        public static final int purple_point=0x7f020023;
-        public static final int red_point=0x7f020024;
-        public static final int text_box=0x7f020025;
-        public static final int yellow_point=0x7f020026;
+        public static final int ic_action_overflow=0x7f02001b;
+        public static final int ic_action_place=0x7f02001c;
+        public static final int ic_action_search=0x7f02001d;
+        public static final int ic_launcher=0x7f02001e;
+        public static final int ic_plusone_medium_off_client=0x7f02001f;
+        public static final int ic_plusone_small_off_client=0x7f020020;
+        public static final int ic_plusone_standard_off_client=0x7f020021;
+        public static final int ic_plusone_tall_off_client=0x7f020022;
+        public static final int le_nid=0x7f020023;
+        public static final int purple_point=0x7f020024;
+        public static final int red_point=0x7f020025;
+        public static final int text_box=0x7f020026;
+        public static final int yellow_point=0x7f020027;
     }
     public static final class id {
-        public static final int action_search=0x7f060019;
-        public static final int action_settings=0x7f060018;
+        public static final int action_search=0x7f06001a;
+        public static final int action_settings=0x7f060019;
         public static final int addButton=0x7f060017;
+        public static final int boutonDetailsLieu=0x7f060018;
         public static final int curseurAffiche=0x7f06000f;
         public static final int hybrid=0x7f060004;
         public static final int imageLieu=0x7f060005;
@@ -269,6 +271,7 @@ containing a value of this type.
         public static final int activity_ambiance_lieu=0x7f030000;
         public static final int activity_liste_lieux=0x7f030001;
         public static final int activity_map=0x7f030002;
+        public static final int simple_list_item_2_button=0x7f030003;
     }
     public static final class menu {
         public static final int ambiance_lieu=0x7f0c0000;

@@ -27,13 +27,16 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.view.*;
+import android.view.View.OnClickListener;
 
 public class ListeLieux extends Activity {
 	
@@ -178,7 +181,7 @@ public class ListeLieux extends Activity {
 	    
 	    ListAdapter adapter = new SimpleAdapter(this, 
 	      liste, 
-	      android.R.layout.simple_list_item_2,
+	      R.layout.simple_list_item_2_button,
 	      new String[] {"Nom", "Adresse"}, 
 	      new int[] {android.R.id.text1, android.R.id.text2 });
 	    listView.setAdapter(adapter);
@@ -191,8 +194,28 @@ public class ListeLieux extends Activity {
 	    	   }
 	    	 });
 	    
+	    
+	    ((SimpleAdapter) adapter).setViewBinder(new SimpleAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data, String textRepresentation){
+                if (view.getId() == R.id.boutonDetailsLieu) {
+                    Button b=(Button) view;
+                    b.setOnClickListener(ambianceLieuOnClickListener);
+                    return true; 
+               }
+                return false;
+            } 
+	    });
 	}
-	
-
+	    
+		private OnClickListener ambianceLieuOnClickListener = new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				
+				Intent AmbianceLieu = new Intent(getApplicationContext(), AmbianceLieu.class);
+				startActivity(AmbianceLieu);
+			}
+		};
 
 }
