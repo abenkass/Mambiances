@@ -190,6 +190,8 @@ public class ListeLieux extends Activity {
 
 	    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	    	      String ref = lieuxAdresses[position][2];
+	    	      Intent AmbianceLieu = new Intent(getApplicationContext(), AmbianceLieu.class);
+	    	      startActivity(AmbianceLieu);
 	    	      
 	    	   }
 	    	 });
