@@ -7,5 +7,10 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
+    
+    <style name="CustomDialog" parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:listPreferredItemPaddingEnd">40dip</item>
+        <item name="android:listPreferredItemPaddingStart">40dip</item>
+    </style>
 
 </resources>
