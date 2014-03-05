@@ -73,6 +73,10 @@
             android:theme="@style/CustomDialog"
             android:excludeFromRecents="true" >"
         </activity>
+        <activity
+            android:name="com.pappl.mambiances.SaisieMarqueur"
+            android:label="@string/title_activity_saisie_marqueur" >
+        </activity>
     </application>
 
 </manifest>

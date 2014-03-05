@@ -19,9 +19,8 @@
     <string name="motPop2">Mot Pop2</string>
     <string name="motPop3">Mot Pop3</string>
     <string name="title_activity_liste_lieux">ListeLieux</string>
-    
-    <string-array 
-        name="listeLieux">
+
+    <string-array name="listeLieux">
         <item name="Lieu1"></item>
         <item name="adresse1"></item>
         <item name="Lieu2"></item>
@@ -63,5 +62,7 @@
         <item name="Lieu20"></item>
         <item name="adresse20"></item>
     </string-array>
+
+    <string name="title_activity_saisie_marqueur">Mon Marqueur</string>
 
 </resources>
