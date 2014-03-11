@@ -237,7 +237,7 @@ public class MapActivity extends Activity implements LocationListener, LoaderCal
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
 			
-			Intent ListeLieux = new Intent(getApplicationContext(), ListeLieux.class);
+			Intent ListeLieux = new Intent(getApplicationContext(), ListeLieuxActivity.class);
 			startActivity(ListeLieux);
 		}
 	};

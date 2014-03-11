@@ -12,10 +12,12 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,21 +33,23 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TwoLineListItem;
 import android.view.*;
 import android.view.View.OnClickListener;
 
-public class ListeLieux extends Activity {
+public class ListeLieuxActivity extends Activity {
 	
 	//début de getLocation
 	private static String[][] lieuxAdresses = new String[20][3];
 	
 	private LocationManager locMan;
 	
-	private List<HashMap<String, String>> liste = new ArrayList<HashMap<String, String>>();
+	private ArrayList<Lieu> lieux = new ArrayList<Lieu>();
 	
 	
 	private class GetPlaces extends AsyncTask<String, Void, String> {
@@ -161,63 +165,39 @@ public class ListeLieux extends Activity {
 	    new GetPlaces().execute(placesNearby);
 	    
 	    final ListView listView = (ListView) findViewById(R.id.listeLieux);
-	    listView.setClickable(true);
 	    
-	    HashMap<String, String> element1;
-	    element1 = new HashMap<String, String>();
-		element1.put("Nom", "Maison");
-		element1.put("Adresse", "Chez moi");
-	    liste.add(element1);
 	    
-	    HashMap<String, String> element;
 	    for(int i = 0 ; i < lieuxAdresses.length ; i++) {
-	      element = new HashMap<String, String>();
-	   
-	      element.put("Nom", lieuxAdresses[i][0]);
+	    	Lieu lieu = new Lieu();
+	    	lieu.setNom(lieuxAdresses[i][0]);
 	      
-	      element.put("Adresse", lieuxAdresses[i][1]);
-	      liste.add(element);
+	    	lieu.setAdresse(lieuxAdresses[i][1]);
+	    	
+	    	lieu.setReference(lieuxAdresses[i][2]);
+	      
+	    	lieux.add(lieu);
 	    }
 	    
-	    ListAdapter adapter = new SimpleAdapter(this, 
-	      liste, 
-	      R.layout.simple_list_item_2_button,
-	      new String[] {"Nom", "Adresse"}, 
-	      new int[] {android.R.id.text1, android.R.id.text2 });
-	    listView.setAdapter(adapter);
+	    ListeLieuxAdapter<Lieu> lieuxAdapter = new ListeLieuxAdapter<Lieu>(this, 
+	      R.layout.simple_list_item_2_button, lieux);
+	    
+	    listView.setAdapter(lieuxAdapter);
 	    
 	    listView.setOnItemClickListener(new OnItemClickListener() {
 
 	    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	    		  System.out.println("pushed");
 	    	      String ref = lieuxAdresses[position][2];
-	    	      Intent AmbianceLieu = new Intent(getApplicationContext(), AmbianceLieu.class);
-	    	      startActivity(AmbianceLieu);
+	    	      Intent ambianceLieu = new Intent(getApplicationContext(), AmbianceLieu.class);
+	    	      ambianceLieu.putExtra("REFERENCE_LIEU", ref);
+	    	      startActivity(ambianceLieu);
 	    	      
 	    	   }
 	    	 });
 	    
 	    
-	    ((SimpleAdapter) adapter).setViewBinder(new SimpleAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Object data, String textRepresentation){
-                if (view.getId() == R.id.boutonDetailsLieu) {
-                    Button b=(Button) view;
-                    b.setOnClickListener(ambianceLieuOnClickListener);
-                    return true; 
-               }
-                return false;
-            } 
-	    });
 	}
 	    
-		private OnClickListener ambianceLieuOnClickListener = new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				
-				Intent AmbianceLieu = new Intent(getApplicationContext(), AmbianceLieu.class);
-				startActivity(AmbianceLieu);
-			}
-		};
+
 
 }

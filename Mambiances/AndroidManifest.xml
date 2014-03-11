@@ -68,7 +68,7 @@
             android:label="@string/title_activity_ambiance_lieu" >
         </activity>
         <activity
-            android:name="com.pappl.mambiances.ListeLieux"
+            android:name="com.pappl.mambiances.ListeLieuxActivity"
             android:label="@string/title_activity_liste_lieux"
             android:theme="@style/CustomDialog"
             android:excludeFromRecents="true" >"
