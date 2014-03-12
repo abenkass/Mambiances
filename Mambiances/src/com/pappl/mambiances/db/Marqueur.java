@@ -3,7 +3,7 @@ package com.pappl.mambiances.db;
 import java.util.Date;
 import java.util.List;
 
-public class Marqueur {
+public class Marqueur extends DAO{
 	
 	
 	//Attributes
@@ -180,23 +180,4 @@ public class Marqueur {
 			this.utilisateur_id = utilisateur_id;
 		}
 		
-		//Methods
-		/**
-		 * method to save the Marqueur in the Database
-		 * @param datasource is the Localdatasource of which Marqueur is a table
-		 */
-		//public abstract void saveToLocal(LocalDataSource datasource);
-		
-		/**
-		 * method to delete a Marqueur form the Database
-		 */
-		
-		/**
-		 * method to update the Marqueur form the Databse
-		 */
-
-		/**
-		 * method to create a Marqueur
-		 */
-
 }

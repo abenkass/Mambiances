@@ -494,6 +494,4 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 		return DATABASE_CREATE12;
 	}
 
-
-	
 }

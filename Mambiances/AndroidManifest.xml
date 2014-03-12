@@ -69,13 +69,21 @@
         </activity>
         <activity
             android:name="com.pappl.mambiances.ListeLieux"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_liste_lieux"
-            android:theme="@style/CustomDialog"
-            android:excludeFromRecents="true" >"
+            android:theme="@style/CustomDialog" >
         </activity>
         <activity
             android:name="com.pappl.mambiances.SaisieMarqueur"
             android:label="@string/title_activity_saisie_marqueur" >
+        </activity>
+        <activity
+            android:name="com.pappl.mambiances.Enregistrer"
+            android:label="@string/title_activity_enregistrer" >
+        </activity>
+        <activity
+            android:name="com.pappl.mambiances.Connexion"
+            android:label="@string/title_activity_connexion" >
         </activity>
     </application>
 
