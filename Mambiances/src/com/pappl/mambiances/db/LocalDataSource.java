@@ -1,10 +1,12 @@
 package com.pappl.mambiances.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class LocalDataSource {
+public  class LocalDataSource {
 	
 	//Database fields
 		/**
@@ -54,7 +56,7 @@ public class LocalDataSource {
 		 * @param context
 		 */
 		public LocalDataSource(Context context){
-			dbHelper = new MySQLiteHelper(context);
+			this.dbHelper = new MySQLiteHelper(context);
 		}
 
 		/**
@@ -68,25 +70,183 @@ public class LocalDataSource {
 		/**
 		 * close the database, need to be called to avoid any issue on the database treatment
 		 */
-		/*public void close(){
+		public void close(){
 			dbHelper.close();
-		}*/
+		}
+		
+		//Methodes
+
+		/**
+		 * method to create a Utilisateur
+		 * @param login is the login of Utilisateur
+		 * @param mdp is the mdp of Utilisateur
+		 */
+		public Utilisateur createUtilisateur (String login, String mdp){
+			ContentValues values = new ContentValues(); 
+			values.put(MySQLiteHelper.COLUMN_UTILISATEURLOGIN, login);
+			values.put(MySQLiteHelper.COLUMN_UTILISATEURMDP, mdp);
+			long insertId = database.insert(MySQLiteHelper.TABLE_UTILISATEUR, null, values);
+			//TODO check the utily of autoincrement
+			Cursor cursor = 
+					database.query(
+							MySQLiteHelper.TABLE_UTILISATEUR,
+							allColumnsUtilisateur,
+							MySQLiteHelper.COLUMN_UTILISATEURID+" = "+insertId,
+							null, null, null, null);
+			cursor.moveToFirst();
+			Utilisateur newUtilisateur = cursorToUtilisateur(cursor);//method at the end of the class
+			cursor.close();
+			return newUtilisateur;
+		}
+		/**
+		 * overload of previous method
+		 * creating a new Utilisateur in the database
+		 * @param id is the utilisateur_id 
+		 * @param login is the utilisateur login
+		 * @param mdp is the utilisateur mdp 
+		 * @return utilisateur is the created utilisateur
+		 */
+		public Utilisateur createUtilisateur (long id, String login, String mdp){
+	        Boolean exist = existUtilisateurWithId(id);
+	        
+	        if(exist == true){
+	        	Utilisateur existUtilisateur = getUtilisateurWithId(id);
+	        	Utilisateur updatedUtilisateur = updateUtilisateur(existUtilisateur, login, mdp);
+	            return updatedUtilisateur;
+	        }
+	        else {
+	            ContentValues values = new ContentValues();
+	            values.put(MySQLiteHelper.COLUMN_UTILISATEURID, id);
+	            values.put(MySQLiteHelper.COLUMN_UTILISATEURLOGIN, login);
+	            values.put(MySQLiteHelper.COLUMN_UTILISATEURMDP, mdp);
+
+	            long insertId = database.insert(MySQLiteHelper.TABLE_UTILISATEUR, null,values);
+	            Cursor cursor = database.query(MySQLiteHelper.TABLE_UTILISATEUR,
+	                    allColumnsUtilisateur, MySQLiteHelper.COLUMN_UTILISATEURID + " = " + insertId, null,null, null, null);
+	            cursor.moveToFirst();
+	            Utilisateur u2 = cursorToUtilisateur(cursor);
+	            cursor.close();
+	            return u2;
+	        }
+	    }
+
+		/**
+		 * update a Utilisateur
+		 * @param id 
+		 * @param utilisateur we ant to update
+		 * @param descr we want to change for
+		 * @return utilisateur updated
+		 */
+		public Utilisateur updateUtilisateur(Utilisateur utilisateur, String descr, String mdp){
+			ContentValues values = new ContentValues();
+			values.put(MySQLiteHelper.COLUMN_UTILISATEURLOGIN, descr);
+			values.put(MySQLiteHelper.COLUMN_UTILISATEURMDP, mdp);
+
+			database.update(MySQLiteHelper.TABLE_UTILISATEUR, values, MySQLiteHelper.COLUMN_UTILISATEURID + " = " +utilisateur.getUtilisateur_id(), null);
+			return getUtilisateurWithId(utilisateur.getUtilisateur_id());
+	 }
+
+
+		/**
+		 * knowing a Utilisateur_id, we want to get the utilisateur itself
+		 * @param id is the id of the utilisateur we are looking for
+		 * @return u1 is the utilisateur we were looking for
+		 */
+	    public Utilisateur getUtilisateurWithId(Long id){
+	        Cursor c = database.query(MySQLiteHelper.TABLE_UTILISATEUR, allColumnsUtilisateur, MySQLiteHelper.COLUMN_UTILISATEURID + " = \"" + id +"\"", null, null, null, null);
+	        c.moveToFirst();
+	        Utilisateur u1 = cursorToUtilisateur(c);
+	        c.close();
+	        return u1;
+	    }
+
+		/**
+		 * knowing an id we test if this utilisateur exists
+		 * @param id is the id of the utilisateur we ask
+		 * @return boolean says if the project with this id exists or not
+		 */
+	    public Boolean existUtilisateurWithId(Long id){
+	        Cursor c = database.query(MySQLiteHelper.TABLE_UTILISATEUR, allColumnsUtilisateur, MySQLiteHelper.COLUMN_UTILISATEURID + " = \"" + id +"\"", null, null, null, null);
+	        if(c.getCount()>0){
+	            c.close();
+	            return true;
+	        }
+	        else {
+	            c.close();
+	            return false;
+	        }
+	    }
+	    /**
+		 * knowing an login we test if this utilisateur exists
+		 * @param login is the login of the utilisateur we ask
+		 * @return boolean says if the utilisateur with this login exists or not
+		 */
+	    public Boolean existUtilisateurWithLogin(String login){
+	        Cursor c = database.query(MySQLiteHelper.TABLE_UTILISATEUR, allColumnsUtilisateur, MySQLiteHelper.COLUMN_UTILISATEURLOGIN + " = \"" + login +"\"", null, null, null, null);
+	        if(c.getCount()>0){
+	            c.close();
+	            return true;
+	        }
+	        else {
+	            c.close();
+	            return false;
+	        }
+	    }
+	    
+	    /**
+		 * knowing login and mdp we test if this utilisateur authentificates
+		 * @param login is the login of the utilisateur we ask
+		 * @param mdp is the mot de passe of the utilisateur we ask
+
+		 * @return boolean says if the utilisateur with this login exists or not
+		 */
+	    public Boolean correctUtilisateur(String login, String mdp){
+	        Cursor c = database.rawQuery("select " + MySQLiteHelper.COLUMN_UTILISATEURLOGIN +"and" +MySQLiteHelper.COLUMN_UTILISATEURMDP + " from " + MySQLiteHelper.TABLE_UTILISATEUR + " where = ?", new String[]{"login", "mdp"});
+	        if(c.getCount()>0){
+	            c.close();
+	            return true;
+	        }
+	        else {
+	            c.close();
+	            return false;
+	        }
+	    }
+
+	    /**
+	     * deleting a Utilisateur
+	     * @param u1 is the project we want to delete
+	     */
+		public void deleteUtilisateur(Utilisateur u1){
+			long id = u1.getUtilisateur_id();
+			System.out.println("Utilisateur deleted with id: "+ id);
+			database.delete(MySQLiteHelper.TABLE_UTILISATEUR, MySQLiteHelper.COLUMN_UTILISATEURID+" = "+ id, null);
+		}
+		
 		
 		/**
-		 * create a Marqueur
-		 * 
+		 * convert a cursor to a utilisateur
+		 * @param cursor
+		 * @return utilisateur 
 		 */
-		/*public Marqueur createMarqueur()*/
+		private Utilisateur cursorToUtilisateur(Cursor cursor) {
+		    Utilisateur u1 = new Utilisateur();
+		    u1.setUtilisateur_id(cursor.getLong(0));
+		    u1.setUtilisateur_login(cursor.getString(1));
+		    u1.setUtilisateur_mdp(cursor.getString(2));
+		    return u1;
+		}
 		
-		/**
-		 * update a Marqueur
-		 */
-		
-		/**
-		 * delete a Marqueur
-		 */
-
-
-
-
+		  /**
+		   * Getting user login status
+		   * return true if rows are there in table
+		   * */
+		  public int getRowCount() {
+		    String countQuery = "SELECT  * FROM " + MySQLiteHelper.TABLE_UTILISATEUR;
+		    Cursor cursor = database.rawQuery(countQuery, null);
+		    int rowCount = cursor.getCount();
+		    database.close();
+		    cursor.close();
+		    // return row count
+		    return rowCount;
+		  }
 }

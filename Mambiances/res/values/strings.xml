@@ -64,5 +64,22 @@
     </string-array>
 
     <string name="title_activity_saisie_marqueur">Mon Marqueur</string>
-
+    <string name="title_activity_enregistrer">S\'Enregistrer</string>
+    <string name="title_activity_connexion">Connexion</string>
+    
+    
+    <string name="logout">Me Déconnecter</string>
+    <string name="sesouvenir">Se souvenir de moi</string>
+    <string name="notification">Notification</string>
+    <string name="notification_title">Connexion réussie</string>
+    <string name="notification_desc">Votre session est active</string>
+    <string name="enregistrer">Première Connexion</string>
+    <string name="fulllogin">Login</string>
+    <string name="motdepasse">Mot de pase</string>
+    <string name="dejaenregistre">déjà enregistré. Me connecter!</string>   
+    <string name="valider_">Valider</string>
+    <string name="connexion">CONNEXION</string>
+    <string name="connexion_">Se connecter</string>
+    <string name="new_account">Je n\'ai pas de compte. Créer un compte!</string>  
+    
 </resources>
