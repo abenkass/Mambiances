@@ -45,7 +45,7 @@ public class ListeLieuxAdapter<T> extends ArrayAdapter<T> {
 	text1.setText(lieu.getNom());
 	text2.setText(lieu.getAdresse());
 	
-	Button boutonDetailsLieu = (Button) convertView.findViewById(R.id.boutonDetailsLieu);
+	View boutonDetailsLieu = convertView.findViewById(R.id.boutonDetailsLieu);
 	
 	boutonDetailsLieu.setOnClickListener(new View.OnClickListener(){
 		@Override
