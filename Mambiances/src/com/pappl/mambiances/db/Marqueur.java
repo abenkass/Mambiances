@@ -3,7 +3,7 @@ package com.pappl.mambiances.db;
 import java.util.Date;
 import java.util.List;
 
-public class Marqueur {
+public class Marqueur{
 	
 	
 	//Attributes
@@ -47,9 +47,9 @@ public class Marqueur {
 	private List<Long> lesMots;
 	
 	/*
-	 * long id of Places associated to Marqueur
+	 * String id of Places associated to Marqueur
 	 */
-	private long places_id;
+	private String places_id;
 	
 	/*
 	 * long id of Utilisateurs associated to Marqueur
@@ -60,7 +60,7 @@ public class Marqueur {
 	//Constructor
 		public Marqueur (){}
 		
-		public Marqueur (long monCompteUtilisateur, List<Long> mesMots, List<Long> mesCurseurs, long monImage, long monLieu, Date maDate){
+		public Marqueur (long monCompteUtilisateur, List<Long> mesMots, List<Long> mesCurseurs, long monImage, String monLieu, Date maDate){
 			this.setUtilisateur_id(monCompteUtilisateur);
 			this.setLesMots(mesMots);
 			this.setLesCurseurs(mesCurseurs);
@@ -115,7 +115,7 @@ public class Marqueur {
 			return mot_id;
 		}
 		
-		public long getPlaces_id() {
+		public String getPlaces_id() {
 			return places_id;
 		}
 
@@ -172,7 +172,7 @@ public class Marqueur {
 		}
 
 	
-		public void setPlaces_id(long places_id) {
+		public void setPlaces_id(String places_id) {
 			this.places_id = places_id;
 		}
 

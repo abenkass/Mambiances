@@ -1,6 +1,11 @@
 package com.pappl.mambiances.db;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -73,10 +78,45 @@ public class LocalDataSource {
 		}*/
 		
 		/**
-		 * create a Marqueur
+		 * create a Marqueur pour les mots et curseurs
 		 * 
 		 */
-		/*public Marqueur createMarqueur()*/
+		public Marqueur createMarqueur(String reference){
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date dateMnt = new Date(System.currentTimeMillis());
+			ContentValues values = new ContentValues();
+		    values.put(MySQLiteHelper.COLUMN_MARQUEURDATECREATION, dateFormat.format(dateMnt));
+		    values.put(MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, dateFormat.format(dateMnt));
+		    values.put(MySQLiteHelper.COLUMN_PLACESID, reference);
+		    long insertId = database.insert(MySQLiteHelper.TABLE_MARQUEUR, null,
+		        values);
+		    Cursor cursor = database.query(MySQLiteHelper.TABLE_MARQUEUR,
+		        allColumnsMarqueur, MySQLiteHelper.COLUMN_MARQUEURID+ " = " + insertId, null,
+		        null, null, null);
+		    cursor.moveToFirst();
+		    Marqueur newMarqueur = cursorToMarqueur(cursor);
+		    cursor.close();
+		    return newMarqueur;
+
+		}
+		
+		
+		private Marqueur cursorToMarqueur(Cursor cursor) {
+		    Marqueur marqueur = new Marqueur();
+		    
+		    marqueur.setMarqueur_id(cursor.getLong(0));
+		    
+		    Date dateCreation = new Date(cursor.getLong(1)*1000);
+		    marqueur.setMarqueur_date_creation(dateCreation);
+		    
+		    Date dateEdition = new Date(cursor.getLong(2)*1000);
+		    marqueur.setMarqueur_date_derniere_edition(dateEdition);
+		    
+		    //TODO Compléter avec cuseur, mot, image et utilisateur
+		    
+		    marqueur.setPlaces_id(cursor.getString(6));
+		    return marqueur;
+		  }
 		
 		/**
 		 * update a Marqueur

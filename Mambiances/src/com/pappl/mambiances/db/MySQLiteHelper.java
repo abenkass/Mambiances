@@ -153,6 +153,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	public static final String COLUMN_PLACESLONGITUDE = "places_longitude";
 
 	public static final String COLUMN_ADRESSEID = "adresse_id";
+	public static final String COLUMN_ADRESSENOM = "adresse_nom";
 	public static final String COLUMN_ADRESSERUE = "adresse_rue";
 	public static final String COLUMN_ADRESSEVILLE = "adresse_ville";
 	public static final String COLUMN_ADRESSENUMERORUE = "adresse_numero_rue";
@@ -245,7 +246,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 				DATABASE_CREATE5 = 		
 					"create table "
 					+ TABLE_PLACES + " (" 
-					+ COLUMN_PLACESID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ COLUMN_PLACESID   + " text not null, "
 					+ COLUMN_PLACESNOM + " text not null, " 
 					+ COLUMN_PLACESLATITUDE + " text not null, " 
 					+ COLUMN_PLACESLONGITUDE + " text not null, " 
@@ -261,10 +262,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					"create table "
 					+ TABLE_ADRESSE + " (" 
 					+ COLUMN_ADRESSEID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ COLUMN_ADRESSERUE + " text not null, " 
+					/*+ COLUMN_ADRESSERUE + " text not null, " 
 					+ COLUMN_ADRESSENUMERORUE + " text not null, " 
 					+ COLUMN_ADRESSEVILLE + " text not null, " 
-					+ COLUMN_ADRESSECODEPOSTAL + " INTEGER " 
+					+ COLUMN_ADRESSECODEPOSTAL + " INTEGER "*/
+					+ COLUMN_ADRESSENOM + "text not null"
 					+"); "
 	;
 	
@@ -328,7 +330,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					"create table "
 					+ TABLE_FAVORIS + " (" 
 					+ COLUMN_UTILISATEURID + " INTEGER, "
-					+ COLUMN_PLACESID + " INTEGER, "
+					+ COLUMN_PLACESID + " text not null, "
 					+ COLUMN_FAVORISDATE + " DATETIME, "
 					+" PRIMARY KEY ( "+COLUMN_UTILISATEURID+", "+COLUMN_PLACESID+" ) "
 					+ " FOREIGN KEY( "+ COLUMN_UTILISATEURID +" ) REFERENCES "+TABLE_UTILISATEUR+" ( "+COLUMN_UTILISATEURID+" ) , "

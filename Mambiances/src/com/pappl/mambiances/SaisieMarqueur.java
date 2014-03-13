@@ -31,12 +31,16 @@ public class SaisieMarqueur extends Activity {
 	LinkedList<String> liste; 
 	
 	TextView result = null;
+	
+	String reference;
 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_saisie_marqueur);
+		
+		reference = getIntent().getExtras().getString("REFERENCE_LIEU");
 
 		mots = (EditText)findViewById(R.id.mots);
 		envoyer = (Button)findViewById(R.id.bouton_envoyer);
