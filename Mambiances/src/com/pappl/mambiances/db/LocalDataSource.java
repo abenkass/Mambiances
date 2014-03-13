@@ -1,5 +1,8 @@
 package com.pappl.mambiances.db;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,12 +23,12 @@ public  class LocalDataSource {
 		private MySQLiteHelper dbHelper;
 
 
-		private String[] allColumnsMarqueur = {MySQLiteHelper.COLUMN_MARQUEURID, MySQLiteHelper.COLUMN_MOTID, MySQLiteHelper.COLUMN_CURSEURID, MySQLiteHelper.COLUMN_IMAGEID, MySQLiteHelper.COLUMN_MARQUEURDATECREATION, MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_UTILISATEURID};
-		private String[] allColumnsMots = {MySQLiteHelper.COLUMN_MOTID, MySQLiteHelper.COLUMN_MOT};
-		private String[] allColumnsCurseur = {MySQLiteHelper.COLUMN_CURSEURID, MySQLiteHelper.COLUMN_CURSEURNOM, MySQLiteHelper.COLUMN_CURSEURVALEUR};
-		private String[] allColumnsImage = {MySQLiteHelper.COLUMN_IMAGEID, MySQLiteHelper.COLUMN_IMAGEURL};
+		private String[] allColumnsMarqueur = {MySQLiteHelper.COLUMN_MARQUEURID, MySQLiteHelper.COLUMN_MARQUEURDATECREATION, MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_UTILISATEURID};
+		private String[] allColumnsMots = {MySQLiteHelper.COLUMN_MOTID, MySQLiteHelper.COLUMN_MOT, MySQLiteHelper.COLUMN_MARQUEURID,};
+		private String[] allColumnsCurseur = {MySQLiteHelper.COLUMN_CURSEURID, MySQLiteHelper.COLUMN_CURSEURVALEUR, MySQLiteHelper.COLUMN_CURSEURNOM, MySQLiteHelper.COLUMN_MARQUEURID,};
+		private String[] allColumnsImage = {MySQLiteHelper.COLUMN_IMAGEID, MySQLiteHelper.COLUMN_IMAGEURL, MySQLiteHelper.COLUMN_MARQUEURID,};
 		private String[] allColumnsPlaces = {MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_PLACESLATITUDE, MySQLiteHelper.COLUMN_PLACESNOM, MySQLiteHelper.COLUMN_PLACESLONGITUDE};
-		private String[] allColumnsAdresse = {MySQLiteHelper.COLUMN_ADRESSEID, MySQLiteHelper.COLUMN_ADRESSERUE , MySQLiteHelper.COLUMN_ADRESSENUMERORUE, MySQLiteHelper.COLUMN_ADRESSEVILLE, MySQLiteHelper.COLUMN_ADRESSECODEPOSTAL};
+		private String[] allColumnsAdresse = {MySQLiteHelper.COLUMN_ADRESSEID,  MySQLiteHelper.COLUMN_ADRESSENOM/*MySQLiteHelper.COLUMN_ADRESSERUE , MySQLiteHelper.COLUMN_ADRESSENUMERORUE, MySQLiteHelper.COLUMN_ADRESSEVILLE, MySQLiteHelper.COLUMN_ADRESSECODEPOSTAL*/};
 		private String[] allColumnsAmbianceMot = {MySQLiteHelper.COLUMN_AMBIANCEMOTID, MySQLiteHelper.COLUMN_PLACESID,  MySQLiteHelper.COLUMN_AMBIANCEMOTMOT};
 		private String[] allColumnsAmbianceCurseur = {MySQLiteHelper.COLUMN_AMBIANCECURSEURID, MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_AMBIANCECURSEURNOM, MySQLiteHelper.COLUMN_AMBIANCECURSEURVALEUR};
 		private String[] allColumnsUtilisateur = {MySQLiteHelper.COLUMN_UTILISATEURID, MySQLiteHelper.COLUMN_UTILISATEURLOGIN, MySQLiteHelper.COLUMN_UTILISATEURMDP};
@@ -214,7 +217,7 @@ public  class LocalDataSource {
 
 	    /**
 	     * deleting a Utilisateur
-	     * @param u1 is the project we want to delete
+	     * @param u1 is the utilisateur we want to delete
 	     */
 		public void deleteUtilisateur(Utilisateur u1){
 			long id = u1.getUtilisateur_id();
@@ -249,4 +252,500 @@ public  class LocalDataSource {
 		    // return row count
 		    return rowCount;
 		  }
+		  
+		  /**
+		   * Méthode pour créer un curseur
+		   */
+		  
+		  public Curseur createCurseur (double valeur, String nom, long marqueurId){
+				ContentValues values = new ContentValues(); 
+				values.put(MySQLiteHelper.COLUMN_CURSEURVALEUR, valeur);
+				values.put(MySQLiteHelper.COLUMN_CURSEURNOM, nom);
+				values.put(MySQLiteHelper.COLUMN_MARQUEURID, marqueurId);
+				long insertId = database.insert(MySQLiteHelper.TABLE_CURSEUR, null, values);
+				//TODO check the utily of autoincrement
+				Cursor cursor = 
+						database.query(
+								MySQLiteHelper.TABLE_CURSEUR,
+								allColumnsCurseur,
+								MySQLiteHelper.COLUMN_CURSEURID+" = "+insertId,
+								null, null, null, null);
+				cursor.moveToFirst();
+				Curseur newCurseur = cursorToCurseur(cursor);//method at the end of the class
+				cursor.close();
+				return newCurseur;
+			}
+		  
+		  /**
+			 * overload of previous method
+			 * creating a new Curseur in the database
+			 * @return curseur is the created curseur
+			 */
+			public Curseur createCurseur (long id, double valeur, String nom, long marqueurId){
+		        Boolean exist = existCurseurWithId(id);
+		        
+		        if(exist == true){
+		        	Curseur existCurseur = getCurseurWithId(id);
+		        	Curseur updatedCurseur = updateCurseur(existCurseur, valeur, nom);
+		            return updatedCurseur;
+		        }
+		        else {
+		            ContentValues values = new ContentValues();
+		            values.put(MySQLiteHelper.COLUMN_CURSEURID, id);
+		            values.put(MySQLiteHelper.COLUMN_CURSEURVALEUR, valeur);
+		            values.put(MySQLiteHelper.COLUMN_CURSEURNOM, nom);
+		            values.put(MySQLiteHelper.COLUMN_MARQUEURID, marqueurId);
+
+		            long insertId = database.insert(MySQLiteHelper.TABLE_CURSEUR, null,values);
+		            Cursor cursor = database.query(MySQLiteHelper.TABLE_CURSEUR,
+		                    allColumnsCurseur, MySQLiteHelper.COLUMN_CURSEURID + " = " + insertId, null,null, null, null);
+		            cursor.moveToFirst();
+		            Curseur c2 = cursorToCurseur(cursor);
+		            cursor.close();
+		            return c2;
+		        }
+		    }
+
+			/**
+			 * update a Curseur
+			 * @return curseur updated
+			 */
+			
+			//TODO après test, voir s'il faut ajouter le marqueurId
+			
+			public Curseur updateCurseur(Curseur curseur, double valeur, String nom){
+				ContentValues values = new ContentValues();
+				values.put(MySQLiteHelper.COLUMN_CURSEURVALEUR, valeur);
+				values.put(MySQLiteHelper.COLUMN_CURSEURNOM, nom);
+
+				database.update(MySQLiteHelper.TABLE_CURSEUR, values, MySQLiteHelper.COLUMN_CURSEURID + " = " +curseur.getCurseur_id(), null);
+				return getCurseurWithId(curseur.getCurseur_id());
+		 }
+
+
+			/**
+			 * knowing a Curseur_id, we want to get the curseur itself
+			 * @param id is the id of the curseur we are looking for
+			 * @return c1 is the curseur we were looking for
+			 */
+		    public Curseur getCurseurWithId(Long id){
+		        Cursor c = database.query(MySQLiteHelper.TABLE_CURSEUR, allColumnsCurseur, MySQLiteHelper.COLUMN_CURSEURID + " = \"" + id +"\"", null, null, null, null);
+		        c.moveToFirst();
+		        Curseur c1 = cursorToCurseur(c);
+		        c.close();
+		        return c1;
+		    }
+
+			/**
+			 * knowing an id we test if this curseur exists
+			 * @param id is the id of the curseur we ask
+			 * @return boolean says if the curseur with this id exists or not
+			 */
+		    public Boolean existCurseurWithId(Long id){
+		        Cursor c = database.query(MySQLiteHelper.TABLE_CURSEUR, allColumnsCurseur, MySQLiteHelper.COLUMN_CURSEURID + " = \"" + id +"\"", null, null, null, null);
+		        if(c.getCount()>0){
+		            c.close();
+		            return true;
+		        }
+		        else {
+		            c.close();
+		            return false;
+		        }
+		    }
+		    
+
+		    /**
+		     * deleting a Curseur
+		     * @param c1 is the curseur we want to delete
+		     */
+			public void deleteCurseur(Curseur c1){
+				long id = c1.getCurseur_id();
+				long marqueurId = c1.getMarqueur_id();
+				System.out.println("Curseur deleted with id: "+ id);
+				database.delete(MySQLiteHelper.TABLE_CURSEUR, MySQLiteHelper.COLUMN_CURSEURID+" = "+ id, null);
+				database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ marqueurId, null);
+			}
+			
+			
+			/**
+			 * convert a cursor to a curseur
+			 * @param cursor
+			 * @return curseur 
+			 */
+			private Curseur cursorToCurseur(Cursor cursor) {
+			    Curseur c1 = new Curseur();
+			    c1.setCurseur_id(cursor.getLong(0));
+			    c1.setCurseur_valeur(cursor.getDouble(1));
+			    c1.setCurseur_nom(cursor.getString(2));
+			    c1.setMarqueur_id(cursor.getLong(3));
+			    return c1;
+			}
+			
+			/**
+			   * Méthode pour créer un mot
+			   */
+			  
+			  public Mot createMot (String mot, long marqueurId){
+					ContentValues values = new ContentValues(); 
+					values.put(MySQLiteHelper.COLUMN_MOT, mot);
+					values.put(MySQLiteHelper.COLUMN_MARQUEURID, marqueurId);
+					long insertId = database.insert(MySQLiteHelper.TABLE_MOT, null, values);
+					//TODO check the utily of autoincrement
+					Cursor cursor = 
+							database.query(
+									MySQLiteHelper.TABLE_MOT,
+									allColumnsMots,
+									MySQLiteHelper.COLUMN_MOTID+" = "+insertId,
+									null, null, null, null);
+					cursor.moveToFirst();
+					Mot newMot = cursorToMot(cursor);//method at the end of the class
+					cursor.close();
+					return newMot;
+				}
+			  
+			  /**
+				 * overload of previous method
+				 * creating a new Mot in the database
+				 * @return mot is the created mot
+				 */
+				public Mot createMot (long id, String mot, long marqueurId){
+			        Boolean exist = existMotWithId(id);
+			        
+			        if(exist == true){
+			        	Mot existMot = getMotWithId(id);
+			        	Mot updatedMot = updateMot(existMot, mot);
+			            return updatedMot;
+			        }
+			        else {
+			            ContentValues values = new ContentValues();
+			            values.put(MySQLiteHelper.COLUMN_MOTID, id);
+			            values.put(MySQLiteHelper.COLUMN_MOT, mot);
+			            values.put(MySQLiteHelper.COLUMN_MARQUEURID, marqueurId);
+
+			            long insertId = database.insert(MySQLiteHelper.TABLE_MOT, null,values);
+			            Cursor cursor = database.query(MySQLiteHelper.TABLE_MOT,
+			                    allColumnsMots, MySQLiteHelper.COLUMN_MOTID + " = " + insertId, null,null, null, null);
+			            cursor.moveToFirst();
+			            Mot m2 = cursorToMot(cursor);
+			            cursor.close();
+			            return m2;
+			        }
+			    }
+
+				/**
+				 * update a Mot
+				 * @return mot updated
+				 */
+				public Mot updateMot(Mot mot, String colMot){
+					ContentValues values = new ContentValues();
+					values.put(MySQLiteHelper.COLUMN_MOT, colMot);
+
+					database.update(MySQLiteHelper.TABLE_MOT, values, MySQLiteHelper.COLUMN_MOTID + " = " +mot.getMot_id(), null);
+					return getMotWithId(mot.getMot_id());
+			 }
+
+
+				/**
+				 * knowing a Mot_id, we want to get the mot itself
+				 * @param id is the id of the mot we are looking for
+				 * @return c1 is the mot we were looking for
+				 */
+			    public Mot getMotWithId(Long id){
+			        Cursor c = database.query(MySQLiteHelper.TABLE_MOT, allColumnsMots, MySQLiteHelper.COLUMN_MOTID + " = \"" + id +"\"", null, null, null, null);
+			        c.moveToFirst();
+			        Mot m1 = cursorToMot(c);
+			        c.close();
+			        return m1;
+			    }
+
+				/**
+				 * knowing an id we test if this mot exists
+				 * @param id is the id of the mot we ask
+				 * @return boolean says if the mot with this id exists or not
+				 */
+			    public Boolean existMotWithId(Long id){
+			        Cursor c = database.query(MySQLiteHelper.TABLE_MOT, allColumnsMots, MySQLiteHelper.COLUMN_MOTID + " = \"" + id +"\"", null, null, null, null);
+			        if(c.getCount()>0){
+			            c.close();
+			            return true;
+			        }
+			        else {
+			            c.close();
+			            return false;
+			        }
+			    }
+			    
+
+			    /**
+			     * deleting a Mot
+			     * @param m1 is the mot we want to delete
+			     */
+				public void deleteMot(Mot m1){
+					long id = m1.getMot_id();
+					long marqueurId = m1.getMarqueur_id();
+					System.out.println("Mot deleted with id: "+ id);
+					database.delete(MySQLiteHelper.TABLE_MOT, MySQLiteHelper.COLUMN_MOTID+" = "+ id, null);
+					database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ marqueurId, null);
+				}
+				
+				
+				/**
+				 * convert a cursor to a mot
+				 * @param cursor
+				 * @return mot 
+				 */
+				private Mot cursorToMot(Cursor cursor) {
+				    Mot m1 = new Mot();
+				    m1.setMot_id(cursor.getLong(0));
+				    m1.setMot(cursor.getString(1));
+				    m1.setMarqueur_id(cursor.getLong(2));
+				    return m1;
+				}
+				
+				/**
+				   * Méthode pour créer une image
+				   */
+				  
+				  public Image createImage (String url, long marqueurId){
+						ContentValues values = new ContentValues(); 
+						values.put(MySQLiteHelper.COLUMN_IMAGEURL, url);
+						values.put(MySQLiteHelper.COLUMN_MARQUEURID, marqueurId);
+						long insertId = database.insert(MySQLiteHelper.TABLE_IMAGE, null, values);
+						//TODO check the utily of autoincrement
+						Cursor cursor = 
+								database.query(
+										MySQLiteHelper.TABLE_IMAGE,
+										allColumnsImage,
+										MySQLiteHelper.COLUMN_IMAGEID+" = "+insertId,
+										null, null, null, null);
+						cursor.moveToFirst();
+						Image newImage = cursorToImage(cursor);//method at the end of the class
+						cursor.close();
+						return newImage;
+					}
+				  
+				  /**
+					 * overload of previous method
+					 * creating a new Image in the database
+					 * @return image is the created image
+					 */
+					public Image createImage (long id, String url, long marqueurId){
+				        Boolean exist = existImageWithId(id);
+				        
+				        if(exist == true){
+				        	Image existImage = getImageWithId(id);
+				        	Image updatedImage = updateImage(existImage, url);
+				            return updatedImage;
+				        }
+				        else {
+				            ContentValues values = new ContentValues();
+				            values.put(MySQLiteHelper.COLUMN_IMAGEID, id);
+				            values.put(MySQLiteHelper.COLUMN_IMAGEURL, url);
+				            values.put(MySQLiteHelper.COLUMN_MARQUEURID, marqueurId);
+
+				            long insertId = database.insert(MySQLiteHelper.TABLE_IMAGE, null,values);
+				            Cursor cursor = database.query(MySQLiteHelper.TABLE_IMAGE,
+				                    allColumnsImage, MySQLiteHelper.COLUMN_IMAGEID + " = " + insertId, null,null, null, null);
+				            cursor.moveToFirst();
+				            Image i2 = cursorToImage(cursor);
+				            cursor.close();
+				            return i2;
+				        }
+				    }
+
+					/**
+					 * update a Image
+					 * @return image updated
+					 */
+					public Image updateImage(Image image, String url){
+						ContentValues values = new ContentValues();
+						values.put(MySQLiteHelper.COLUMN_IMAGEURL, url);
+
+						database.update(MySQLiteHelper.TABLE_IMAGE, values, MySQLiteHelper.COLUMN_IMAGEID + " = " +image.getImage_id(), null);
+						return getImageWithId(image.getImage_id());
+					}
+
+					/**
+					 * knowing a Mot_id, we want to get the image itself
+					 * @param id is the id of the image we are looking for
+					 * @return c1 is the image we were looking for
+					 */
+				    public Image getImageWithId(Long id){
+				        Cursor c = database.query(MySQLiteHelper.TABLE_IMAGE, allColumnsImage, MySQLiteHelper.COLUMN_IMAGEID + " = \"" + id +"\"", null, null, null, null);
+				        c.moveToFirst();
+				        Image i1 = cursorToImage(c);
+				        c.close();
+				        return i1;
+				    }
+
+					/**
+					 * knowing an id we test if this image exists
+					 * @param id is the id of the image we ask
+					 * @return boolean says if the image with this id exists or not
+					 */
+				    public Boolean existImageWithId(Long id){
+				        Cursor c = database.query(MySQLiteHelper.TABLE_IMAGE, allColumnsImage, MySQLiteHelper.COLUMN_IMAGEID + " = \"" + id +"\"", null, null, null, null);
+				        if(c.getCount()>0){
+				            c.close();
+				            return true;
+				        }
+				        else {
+				            c.close();
+				            return false;
+				        }
+				    }
+				    
+
+				    /**
+				     * deleting an Image
+				     * @param i1 is the image we want to delete
+				     */
+					public void deleteImage(Image i1){
+						long id = i1.getImage_id();
+						long marqueurId = i1.getMarqueur_id();
+						System.out.println("Image deleted with id: "+ id);
+						database.delete(MySQLiteHelper.TABLE_IMAGE, MySQLiteHelper.COLUMN_IMAGEID+" = "+ id, null);
+						database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ marqueurId, null);
+					}
+					
+					
+					/**
+					 * convert a cursor to an image
+					 * @param cursor
+					 * @return image
+					 */
+					private Image cursorToImage(Cursor cursor) {
+					    Image i1 = new Image();
+					    i1.setImage_id(cursor.getLong(0));
+					    i1.setImage_url(cursor.getString(1));
+					    i1.setMarqueur_id(cursor.getLong(2));
+					    return i1;
+					}
+			
+					/**
+					 * create a Marqueur pour les mots
+					 * 
+					 */
+					public Marqueur createMarqueurMot(String reference, long motId, long utilisateurId){
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						Date dateMnt = new Date(System.currentTimeMillis());
+						ContentValues values = new ContentValues();
+					    values.put(MySQLiteHelper.COLUMN_MARQUEURDATECREATION, dateFormat.format(dateMnt));
+					    values.put(MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, dateFormat.format(dateMnt));
+					    values.put(MySQLiteHelper.COLUMN_PLACESID, reference);
+					    values.put(MySQLiteHelper.COLUMN_UTILISATEURID, utilisateurId);
+					    long insertId = database.insert(MySQLiteHelper.TABLE_MARQUEUR, null,
+					        values);
+					    Cursor cursor = database.query(MySQLiteHelper.TABLE_MARQUEUR,
+					        allColumnsMarqueur, MySQLiteHelper.COLUMN_MARQUEURID+ " = " + insertId, null,
+					        null, null, null);
+					    cursor.moveToFirst();
+					    Marqueur newMarqueur = cursorToMarqueur(cursor);
+					    cursor.close();
+					    return newMarqueur;
+
+					}
+					
+					public Marqueur createMarqueurMot(long marqueurId, String reference, long motId, long utilisateurId){
+						Boolean exist = existMarqueurWithId(marqueurId);
+				        
+				        if(exist == true){
+				        	Marqueur existMarqueur = getMarqueurWithId(marqueurId);
+				        	Marqueur updatedMarqueur = updateMarqueur(existMarqueur);
+				            return updatedMarqueur;
+				        }
+				        else {
+				        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							Date dateMnt = new Date(System.currentTimeMillis());
+							ContentValues values = new ContentValues();
+						    values.put(MySQLiteHelper.COLUMN_MARQUEURDATECREATION, dateFormat.format(dateMnt));
+						    values.put(MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, dateFormat.format(dateMnt));
+						    values.put(MySQLiteHelper.COLUMN_PLACESID, reference);
+						    values.put(MySQLiteHelper.COLUMN_UTILISATEURID, utilisateurId);
+						    long insertId = database.insert(MySQLiteHelper.TABLE_MARQUEUR, null,
+						        values);
+						    Cursor cursor = database.query(MySQLiteHelper.TABLE_MARQUEUR,
+						        allColumnsMarqueur, MySQLiteHelper.COLUMN_MARQUEURID+ " = " + insertId, null,
+						        null, null, null);
+						    cursor.moveToFirst();
+						    Marqueur newMarqueur = cursorToMarqueur(cursor);
+						    cursor.close();
+						    return newMarqueur;
+				        }
+
+					}
+					
+					/**
+					 * update a Marqueur
+					 * @return marqueur updated
+					 */
+					public Marqueur updateMarqueur(Marqueur marqueur){
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						Date dateMnt = new Date(System.currentTimeMillis());
+						ContentValues values = new ContentValues();
+						values.put(MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, dateFormat.format(dateMnt));
+
+						database.update(MySQLiteHelper.TABLE_MARQUEUR, values, MySQLiteHelper.COLUMN_MARQUEURID + " = " +marqueur.getMarqueur_id(), null);
+						return getMarqueurWithId(marqueur.getMarqueur_id());
+					}
+
+					/**
+					 * knowing a Marqueur_id, we want to get the marqueur itself
+					 * @param id is the id of the marqueur we are looking for
+					 * @return m1 is the marqueur we were looking for
+					 */
+				    public Marqueur getMarqueurWithId(Long id){
+				        Cursor c = database.query(MySQLiteHelper.TABLE_MARQUEUR, allColumnsMarqueur, MySQLiteHelper.COLUMN_MARQUEURID + " = \"" + id +"\"", null, null, null, null);
+				        c.moveToFirst();
+				        Marqueur m1 = cursorToMarqueur(c);
+				        c.close();
+				        return m1;
+				    }
+
+					/**
+					 * knowing an id we test if this marqueur exists
+					 * @param id is the id of the marqueur we ask
+					 * @return boolean says if the marqueur with this id exists or not
+					 */
+				    public Boolean existMarqueurWithId(Long id){
+				        Cursor c = database.query(MySQLiteHelper.TABLE_MARQUEUR, allColumnsMarqueur, MySQLiteHelper.COLUMN_MARQUEURID + " = \"" + id +"\"", null, null, null, null);
+				        if(c.getCount()>0){
+				            c.close();
+				            return true;
+				        }
+				        else {
+				            c.close();
+				            return false;
+				        }
+				    }
+				    
+
+				    /**
+				     * deleting a Marqueur
+				     */
+					public void deleteMarqueur(Marqueur m1){
+						long id = m1.getMarqueur_id();
+						System.out.println("Marqueur deleted with id: "+ id);
+						database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ id, null);
+					}
+
+
+					private Marqueur cursorToMarqueur(Cursor cursor) {
+					    Marqueur marqueur = new Marqueur();
+
+					    marqueur.setMarqueur_id(cursor.getLong(0));
+
+					    Date dateCreation = new Date(cursor.getLong(1)*1000);
+					    marqueur.setMarqueur_date_creation(dateCreation);
+
+					    Date dateEdition = new Date(cursor.getLong(2)*1000);
+					    marqueur.setMarqueur_date_derniere_edition(dateEdition);
+
+					    marqueur.setPlaces_id(cursor.getString(3));
+					    
+					    marqueur.setUtilisateur_id(cursor.getLong(4));
+					    return marqueur;
+					  }
+
 }
+

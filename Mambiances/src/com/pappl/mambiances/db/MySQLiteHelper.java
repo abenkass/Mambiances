@@ -157,6 +157,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 	public static final String COLUMN_ADRESSEVILLE = "adresse_ville";
 	public static final String COLUMN_ADRESSENUMERORUE = "adresse_numero_rue";
 	public static final String COLUMN_ADRESSECODEPOSTAL = "adresse_code_postal";
+	public static final String COLUMN_ADRESSENOM = "adresse_nom";
 
 	public static final String COLUMN_AMBIANCEMOTID = "amabiancemot_id";
 	public static final String COLUMN_AMBIANCEMOTMOT= "ambiancemot_mot";
@@ -194,9 +195,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					+ COLUMN_MARQUEURID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ COLUMN_MARQUEURDATECREATION + " DATETIME, "
 					+ COLUMN_MARQUEURDATEDERNIEREEDITION + " DATETIME"  
-					+ " FOREIGN KEY( "+ COLUMN_CURSEURID +" ) REFERENCES "+TABLE_CURSEUR+" ( "+COLUMN_CURSEURID+" ),"
-					+ " FOREIGN KEY( "+ COLUMN_IMAGEID +" ) REFERENCES "+TABLE_IMAGE+" ( "+COLUMN_IMAGEID+" ),"
-					+ " FOREIGN KEY( "+ COLUMN_MOTID +" ) REFERENCES "+TABLE_MOT+" ( "+COLUMN_MOTID+" ),"
 					+ " FOREIGN KEY( "+ COLUMN_PLACESID +" ) REFERENCES "+TABLE_PLACES+" ( "+COLUMN_PLACESID+" ),"
 					+ " FOREIGN KEY( "+ COLUMN_UTILISATEURID +" ) REFERENCES "+TABLE_UTILISATEUR+" ( "+COLUMN_UTILISATEURID+" )"
 					+"); "
@@ -212,6 +210,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					+ COLUMN_CURSEURID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					+ COLUMN_CURSEURVALEUR + " DOUBLE, " 
 					+ COLUMN_CURSEURNOM + " text not null "
+					+ "FOREIGN KEY( "+ COLUMN_MARQUEURID +" ) REFERENCES"+ TABLE_MARQUEUR+" ( "+COLUMN_MARQUEURID+" ),"
 					+"); "
 	;
 	
@@ -223,7 +222,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					"create table "
 					+ TABLE_MOT + " (" 
 					+ COLUMN_MOTID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ COLUMN_MOT + " text not null " 
+					+ COLUMN_MOT + " text not null "
+					+ "FOREIGN KEY( "+ COLUMN_MARQUEURID +" ) REFERENCES"+ TABLE_MARQUEUR+" ( "+COLUMN_MARQUEURID+" ),"
 					+"); "
 	;
 	/**
@@ -234,7 +234,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					"create table "
 					+ TABLE_IMAGE + " (" 
 					+ COLUMN_IMAGEID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ COLUMN_IMAGEURL + " text not null " 
+					+ COLUMN_IMAGEURL + " text not null "
+					+ "FOREIGN KEY( "+ COLUMN_MARQUEURID +" ) REFERENCES"+ TABLE_MARQUEUR+" ( "+COLUMN_MARQUEURID+" ),"
 					+"); "
 	;
 	
@@ -245,7 +246,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 				DATABASE_CREATE5 = 		
 					"create table "
 					+ TABLE_PLACES + " (" 
-					+ COLUMN_PLACESID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+					+ COLUMN_PLACESID   + " text not null, "
 					+ COLUMN_PLACESNOM + " text not null, " 
 					+ COLUMN_PLACESLATITUDE + " text not null, " 
 					+ COLUMN_PLACESLONGITUDE + " text not null, " 
@@ -261,10 +262,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					"create table "
 					+ TABLE_ADRESSE + " (" 
 					+ COLUMN_ADRESSEID   + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-					+ COLUMN_ADRESSERUE + " text not null, " 
+					/*+ COLUMN_ADRESSERUE + " text not null, " 
 					+ COLUMN_ADRESSENUMERORUE + " text not null, " 
 					+ COLUMN_ADRESSEVILLE + " text not null, " 
-					+ COLUMN_ADRESSECODEPOSTAL + " INTEGER " 
+					+ COLUMN_ADRESSECODEPOSTAL + " INTEGER " */
+					+ COLUMN_ADRESSENOM + "text not null"
 					+"); "
 	;
 	

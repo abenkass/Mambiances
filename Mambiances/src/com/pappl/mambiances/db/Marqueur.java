@@ -23,33 +23,9 @@ public class Marqueur extends DAO{
 	private Date marqueur_date_derniere_edition;
 	
 	/*
-	 * long id of the Curseur associated to Marqueur
-	 */
-	private long curseur_id;
-	
-	/*
-	 * List of Curseurs associated to Marqueur
-	 */
-	private List<Long> lesCurseurs;
-	/*
-	 * long id of the Image associated to Marqueur
-	 */
-	private long image_id;
-	
-	/*
-	 * long id of a Mot associated to Marqueur
-	 */
-	private long mot_id;
-	
-	/*
-	 * List of Mots associated to Marqueur
-	 */
-	private List<Long> lesMots;
-	
-	/*
 	 * long id of Places associated to Marqueur
 	 */
-	private long places_id;
+	private String places_id;
 	
 	/*
 	 * long id of Utilisateurs associated to Marqueur
@@ -60,11 +36,8 @@ public class Marqueur extends DAO{
 	//Constructor
 		public Marqueur (){}
 		
-		public Marqueur (long monCompteUtilisateur, List<Long> mesMots, List<Long> mesCurseurs, long monImage, long monLieu, Date maDate){
+		public Marqueur (long monCompteUtilisateur, String monLieu, Date maDate){
 			this.setUtilisateur_id(monCompteUtilisateur);
-			this.setLesMots(mesMots);
-			this.setLesCurseurs(mesCurseurs);
-			this.setImage_id(monImage);
 			this.setPlaces_id(monLieu);
 			this.setMarqueur_date_creation(maDate);
 			this.setMarqueur_date_derniere_edition(maDate);
@@ -99,23 +72,7 @@ public class Marqueur extends DAO{
 			return marqueur_date_derniere_edition;
 		}
 		
-		public long getCurseur_id() {
-			return curseur_id;
-		}
-		
-		public List<Long> getLesCurseurs() {
-			return lesCurseurs;
-		}
-		
-		public long getImage_id() {
-			return image_id;
-		}
-		
-		public long getMot_id() {
-			return mot_id;
-		}
-		
-		public long getPlaces_id() {
+		public String getPlaces_id() {
 			return places_id;
 		}
 
@@ -145,39 +102,25 @@ public class Marqueur extends DAO{
 				Date marqueur_date_derniere_edition) {
 			this.marqueur_date_derniere_edition = marqueur_date_derniere_edition;
 		}
-
-		public void setCurseur_id(long curseur_id) {
-			this.curseur_id = curseur_id;
-		}
-
-		public void setLesCurseurs(List<Long> lesCurseurs) {
-			this.lesCurseurs = lesCurseurs;
-		}
-
-		public void setImage_id(long image_id) {
-			this.image_id = image_id;
-		}
-
-
-		public void setMot_id(long mot_id) {
-			this.mot_id = mot_id;
-		}
-
-		public List<Long> getLesMots() {
-			return lesMots;
-		}
-
-		public void setLesMots(List<Long> lesMots) {
-			this.lesMots = lesMots;
-		}
-
 	
-		public void setPlaces_id(long places_id) {
+		public void setPlaces_id(String places_id) {
 			this.places_id = places_id;
 		}
 
 		public void setUtilisateur_id(long utilisateur_id) {
 			this.utilisateur_id = utilisateur_id;
+		}
+
+		@Override
+		public void saveToLocal(LocalDataSource datasource) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 }
