@@ -182,8 +182,6 @@ public class ListeLieuxActivity extends Activity {
 			    "&radius=100&sensor=true" +
 			    "&key=AIzaSyDDRWm2cBS4tRli0Oo0DHnIaeqPsFYCgEY";
 	    
-	    
-	    
 	    new GetPlaces().execute(placesNearby);
 	    
 	    final ListView listView = (ListView) findViewById(R.id.listeLieux);
@@ -207,12 +205,17 @@ public class ListeLieuxActivity extends Activity {
 	    	
 	    	if (exist){
 	    	}else{
-	    		Adresse adresse = datasource.createAdresse(adr);
-	    		long adrId = adresse.getAdresse_id();
-	    		datasource.createPlace (ref, nom, lati, lngi, adrId);
+	    		try {
+	    			Adresse adresse = datasource.createAdresse(adr);
+	    			long adrId = adresse.getAdresse_id();
+	    			datasource.createPlace (ref, nom, lati, lngi, adrId);
+	    		}
+	    		catch(Exception e){
+				    e.printStackTrace();
+				}
+	    
 	    	}
 	    }
-	    
 	    ListeLieuxAdapter<Lieu> lieuxAdapter = new ListeLieuxAdapter<Lieu>(this, 
 	      R.layout.simple_list_item_2_button, lieux);
 	    
