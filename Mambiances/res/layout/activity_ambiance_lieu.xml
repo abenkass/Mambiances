@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:textAlignment="viewStart"
         android:text="@string/nomLieu"
-        android:textSize="24sp"/>"
-    "
+        android:textSize="24sp"/>
+    
     <TextView 
         android:id="@+id/typeLieu"
         android:layout_width="wrap_content"

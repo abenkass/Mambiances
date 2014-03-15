@@ -22,6 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.pappl.mambiances.db.Adresse;
+import com.pappl.mambiances.db.LocalDataSource;
+
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -47,10 +51,13 @@ public class ListeLieuxActivity extends Activity {
 	//début de getLocation
 	private static String[][] lieuxAdresses = new String[20][3];
 	
+	private static double[][] lieuxAdressesD = new double[20][2];
+	
 	private LocationManager locMan;
 	
 	private ArrayList<Lieu> lieux = new ArrayList<Lieu>();
 	
+	private LocalDataSource datasource;
 	
 	private class GetPlaces extends AsyncTask<String, Void, String> {
 		//fetch and parse place data
@@ -97,6 +104,8 @@ public class ListeLieuxActivity extends Activity {
 			            lieuxAdresses[pm][0]=null;
 			            lieuxAdresses[pm][1]=null;
 			            lieuxAdresses[pm][2]=null;
+			            lieuxAdressesD[pm][0]=0;
+			            lieuxAdressesD[pm][1]=0;
 			        }
 			    }
 			}
@@ -111,11 +120,17 @@ public class ListeLieuxActivity extends Activity {
 					String placeName="";
 					String vicinity="";
 					String reference="";
+					double lat = 0;
+					double lng = 0;
 					
 					try{
 					    //attempt to retrieve place data values
 						missingValue=false;
 						JSONObject placeObject = placesArray.getJSONObject(p);
+						JSONObject loc = placeObject.getJSONObject("geometry").getJSONObject("location");
+						
+						lat = Double.valueOf(loc.getString("lat"));
+						lng = Double.valueOf(loc.getString("lng"));
 						vicinity = placeObject.getString("vicinity");
 						placeName = placeObject.getString("name");
 						reference = placeObject.getString("reference");
@@ -128,11 +143,15 @@ public class ListeLieuxActivity extends Activity {
 						lieuxAdresses[p][0]=null;
 						lieuxAdresses[p][1]=null;
 						lieuxAdresses[p][2]=null;
+						lieuxAdressesD[p][0]=0;
+						lieuxAdressesD[p][1]=0;
 					}
 					else
 					    lieuxAdresses[p][0] = placeName;
 						lieuxAdresses[p][1] = vicinity;
 						lieuxAdresses[p][2] = reference;
+						lieuxAdressesD[p][0] = lat;
+						lieuxAdressesD[p][1] = lng;
 				}
 			}
 			catch (Exception e) {
@@ -148,6 +167,9 @@ public class ListeLieuxActivity extends Activity {
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_liste_lieux);
+	    
+	    datasource = MapActivity.datasource;
+	    datasource.open();
 	    
 	    locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
@@ -169,13 +191,26 @@ public class ListeLieuxActivity extends Activity {
 	    
 	    for(int i = 0 ; i < lieuxAdresses.length ; i++) {
 	    	Lieu lieu = new Lieu();
-	    	lieu.setNom(lieuxAdresses[i][0]);
-	      
-	    	lieu.setAdresse(lieuxAdresses[i][1]);
+	    	String nom = lieuxAdresses[i][0];
+	    	String adr = lieuxAdresses[i][1];
+	    	String ref = lieuxAdresses[i][2];
+	    	double lati = lieuxAdressesD[i][0];
+	    	double lngi = lieuxAdressesD[i][1];
 	    	
-	    	lieu.setReference(lieuxAdresses[i][2]);
-	      
+	    	lieu.setNom(nom);
+	    	lieu.setAdresse(adr);
+	    	lieu.setReference(ref);
 	    	lieux.add(lieu);
+	    	
+	    	//TODO créer une Adresse, créer un Places et alimenter
+	    	Boolean exist = datasource.existPlaceWithId(ref);
+	    	
+	    	if (exist){
+	    	}else{
+	    		Adresse adresse = datasource.createAdresse(adr);
+	    		long adrId = adresse.getAdresse_id();
+	    		datasource.createPlace (ref, nom, lati, lngi, adrId);
+	    	}
 	    }
 	    
 	    ListeLieuxAdapter<Lieu> lieuxAdapter = new ListeLieuxAdapter<Lieu>(this, 
@@ -188,12 +223,14 @@ public class ListeLieuxActivity extends Activity {
 	    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	    		  System.out.println("pushed");
 	    	      String ref = lieuxAdresses[position][2];
-	    	      Intent ambianceLieu = new Intent(getApplicationContext(), AmbianceLieu.class);
-	    	      ambianceLieu.putExtra("REFERENCE_LIEU", ref);
-	    	      startActivity(ambianceLieu);
+	    	      Intent saisieMarqueur = new Intent(getApplicationContext(), SaisieMarqueur.class);
+	    	      saisieMarqueur.putExtra("REFERENCE_LIEU", ref);
+	    	      startActivity(saisieMarqueur);
 	    	      
 	    	   }
 	    	 });
+	    
+	    datasource.close();
 	    
 	    
 	}

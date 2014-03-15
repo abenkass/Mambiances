@@ -27,7 +27,7 @@ public  class LocalDataSource {
 		private String[] allColumnsMots = {MySQLiteHelper.COLUMN_MOTID, MySQLiteHelper.COLUMN_MOT, MySQLiteHelper.COLUMN_MARQUEURID,};
 		private String[] allColumnsCurseur = {MySQLiteHelper.COLUMN_CURSEURID, MySQLiteHelper.COLUMN_CURSEURVALEUR, MySQLiteHelper.COLUMN_CURSEURNOM, MySQLiteHelper.COLUMN_MARQUEURID,};
 		private String[] allColumnsImage = {MySQLiteHelper.COLUMN_IMAGEID, MySQLiteHelper.COLUMN_IMAGEURL, MySQLiteHelper.COLUMN_MARQUEURID,};
-		private String[] allColumnsPlaces = {MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_PLACESLATITUDE, MySQLiteHelper.COLUMN_PLACESNOM, MySQLiteHelper.COLUMN_PLACESLONGITUDE};
+		private String[] allColumnsPlaces = {MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_PLACESNOM, MySQLiteHelper.COLUMN_PLACESLATITUDE, MySQLiteHelper.COLUMN_PLACESLONGITUDE, MySQLiteHelper.COLUMN_ADRESSEID};
 		private String[] allColumnsAdresse = {MySQLiteHelper.COLUMN_ADRESSEID,  MySQLiteHelper.COLUMN_ADRESSENOM/*MySQLiteHelper.COLUMN_ADRESSERUE , MySQLiteHelper.COLUMN_ADRESSENUMERORUE, MySQLiteHelper.COLUMN_ADRESSEVILLE, MySQLiteHelper.COLUMN_ADRESSECODEPOSTAL*/};
 		private String[] allColumnsAmbianceMot = {MySQLiteHelper.COLUMN_AMBIANCEMOTID, MySQLiteHelper.COLUMN_PLACESID,  MySQLiteHelper.COLUMN_AMBIANCEMOTMOT};
 		private String[] allColumnsAmbianceCurseur = {MySQLiteHelper.COLUMN_AMBIANCECURSEURID, MySQLiteHelper.COLUMN_PLACESID, MySQLiteHelper.COLUMN_AMBIANCECURSEURNOM, MySQLiteHelper.COLUMN_AMBIANCECURSEURVALEUR};
@@ -112,7 +112,7 @@ public  class LocalDataSource {
 		public Utilisateur createUtilisateur (long id, String login, String mdp){
 	        Boolean exist = existUtilisateurWithId(id);
 	        
-	        if(exist == true){
+	        if(exist){
 	        	Utilisateur existUtilisateur = getUtilisateurWithId(id);
 	        	Utilisateur updatedUtilisateur = updateUtilisateur(existUtilisateur, login, mdp);
 	            return updatedUtilisateur;
@@ -284,7 +284,7 @@ public  class LocalDataSource {
 			public Curseur createCurseur (long id, double valeur, String nom, long marqueurId){
 		        Boolean exist = existCurseurWithId(id);
 		        
-		        if(exist == true){
+		        if(exist){
 		        	Curseur existCurseur = getCurseurWithId(id);
 		        	Curseur updatedCurseur = updateCurseur(existCurseur, valeur, nom);
 		            return updatedCurseur;
@@ -411,7 +411,7 @@ public  class LocalDataSource {
 				public Mot createMot (long id, String mot, long marqueurId){
 			        Boolean exist = existMotWithId(id);
 			        
-			        if(exist == true){
+			        if(exist){
 			        	Mot existMot = getMotWithId(id);
 			        	Mot updatedMot = updateMot(existMot, mot);
 			            return updatedMot;
@@ -532,7 +532,7 @@ public  class LocalDataSource {
 					public Image createImage (long id, String url, long marqueurId){
 				        Boolean exist = existImageWithId(id);
 				        
-				        if(exist == true){
+				        if(exist){
 				        	Image existImage = getImageWithId(id);
 				        	Image updatedImage = updateImage(existImage, url);
 				            return updatedImage;
@@ -621,7 +621,255 @@ public  class LocalDataSource {
 					    i1.setMarqueur_id(cursor.getLong(2));
 					    return i1;
 					}
-			
+					
+					/**
+					   * Méthode pour créer une adresse
+					   */
+					  
+					  public Adresse createAdresse (String nom){
+							ContentValues values = new ContentValues(); 
+							values.put(MySQLiteHelper.COLUMN_ADRESSENOM, nom);
+							long insertId = database.insert(MySQLiteHelper.TABLE_ADRESSE, null, values);
+							//TODO check the utily of autoincrement
+							Cursor cursor = 
+									database.query(
+											MySQLiteHelper.TABLE_ADRESSE,
+											allColumnsAdresse,
+											MySQLiteHelper.COLUMN_ADRESSEID+" = "+insertId,
+											null, null, null, null);
+							cursor.moveToFirst();
+							Adresse newAdresse = cursorToAdresse(cursor);//method at the end of the class
+							cursor.close();
+							return newAdresse;
+						}
+					  
+					  /**
+						 * overload of previous method
+						 * creating a new Adresse in the database
+						 * @return adresse is the created adresse
+						 */
+						public Adresse createAdresse (long id, String nom){
+					        Boolean exist = existImageWithId(id);
+					        
+					        if(exist){
+					        	Adresse existAdresse = getAdresseWithId(id);
+					        	Adresse updatedAdresse = updateAdresse(existAdresse, nom);
+					            return updatedAdresse;
+					        }
+					        else {
+					        	ContentValues values = new ContentValues(); 
+								values.put(MySQLiteHelper.COLUMN_ADRESSENOM, nom);
+								long insertId = database.insert(MySQLiteHelper.TABLE_ADRESSE, null, values);
+								//TODO check the utily of autoincrement
+								Cursor cursor = 
+										database.query(
+												MySQLiteHelper.TABLE_ADRESSE,
+												allColumnsAdresse,
+												MySQLiteHelper.COLUMN_ADRESSEID+" = "+insertId,
+												null, null, null, null);
+								cursor.moveToFirst();
+								Adresse a2 = cursorToAdresse(cursor);//method at the end of the class
+								cursor.close();
+								return a2;
+								}
+					    }
+
+						/**
+						 * update a Adresse
+						 * @return adresse updated
+						 */
+						public Adresse updateAdresse(Adresse adresse, String nom){
+							ContentValues values = new ContentValues();
+							values.put(MySQLiteHelper.COLUMN_ADRESSENOM, nom);
+
+							database.update(MySQLiteHelper.TABLE_ADRESSE, values, MySQLiteHelper.COLUMN_ADRESSEID + " = " +adresse.getAdresse_id(), null);
+							return getAdresseWithId(adresse.getAdresse_id());
+						}
+
+						/**
+						 * knowing an Adresse_id, we want to get the adresse itself
+						 * @param id is the id of the adresse we are looking for
+						 * @return a1 is the adresse we were looking for
+						 */
+					    public Adresse getAdresseWithId(Long id){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_ADRESSE, allColumnsAdresse, MySQLiteHelper.COLUMN_ADRESSEID + " = \"" + id +"\"", null, null, null, null);
+					        c.moveToFirst();
+					        Adresse a1 = cursorToAdresse(c);
+					        c.close();
+					        return a1;
+					    }
+
+						/**
+						 * knowing an id we test if this adresse exists
+						 * @param id is the id of the adresse we ask
+						 * @return boolean says if the adresse with this id exists or not
+						 */
+					    public Boolean existAdresseWithId(Long id){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_ADRESSE, allColumnsAdresse, MySQLiteHelper.COLUMN_ADRESSEID + " = \"" + id +"\"", null, null, null, null);
+					        if(c.getCount()>0){
+					            c.close();
+					            return true;
+					        }
+					        else {
+					            c.close();
+					            return false;
+					        }
+					    }
+					    
+
+					    /**
+					     * deleting an Adresse
+					     * @param a1 is the adresse we want to delete
+					     */
+						public void deleteAdresse(Adresse a1){
+							long id = a1.getAdresse_id();
+							System.out.println("Adresse deleted with id: "+ id);
+							database.delete(MySQLiteHelper.TABLE_ADRESSE, MySQLiteHelper.COLUMN_ADRESSEID+" = "+ id, null);
+						}
+						
+						
+						/**
+						 * convert a cursor to an adresse
+						 * @param cursor
+						 * @return adresse
+						 */
+						private Adresse cursorToAdresse(Cursor cursor) {
+						    Adresse a1 = new Adresse();
+						    a1.setAdresse_id(cursor.getLong(0));
+						    a1.setAdresse_nom(cursor.getString(1));
+						    return a1;
+						}
+						
+					/**
+					   * Méthode pour créer une place
+					   */
+					  
+					  public Places createPlace (String nom, double latitude, double longitude, long adresse_id){
+							ContentValues values = new ContentValues(); 
+							values.put(MySQLiteHelper.COLUMN_PLACESNOM, nom);
+							values.put(MySQLiteHelper.COLUMN_PLACESLONGITUDE, longitude);
+							values.put(MySQLiteHelper.COLUMN_PLACESLATITUDE, latitude);
+							values.put(MySQLiteHelper.COLUMN_ADRESSEID, adresse_id);
+							long insertId = database.insert(MySQLiteHelper.TABLE_PLACES, null, values);
+							//TODO check the utily of autoincrement
+							Cursor cursor = 
+									database.query(
+											MySQLiteHelper.TABLE_PLACES,
+											allColumnsPlaces,
+											MySQLiteHelper.COLUMN_PLACESID+" = "+insertId,
+											null, null, null, null);
+							cursor.moveToFirst();
+							Places newPlace = cursorToPlace(cursor);//method at the end of the class
+							cursor.close();
+							return newPlace;
+						}
+					  
+					  /**
+						 * overload of previous method
+						 * creating a new Image in the database
+						 * @return image is the created image
+						 */
+						public Places createPlace (String id, String nom, double latitude, double longitude, long adresse_id){
+					        Boolean exist = existPlaceWithId(id);
+					        
+					        if(exist){
+					        	Places existPlace = getPlaceWithId(id);
+					        	Places updatedPlace = updatePlace(existPlace, nom, latitude, longitude, adresse_id);
+					            return updatedPlace;
+					        }
+					        else {
+					        	ContentValues values = new ContentValues();
+					        	values.put(MySQLiteHelper.COLUMN_PLACESID, id);
+					        	values.put(MySQLiteHelper.COLUMN_PLACESNOM, nom);
+								values.put(MySQLiteHelper.COLUMN_PLACESLONGITUDE, longitude);
+								values.put(MySQLiteHelper.COLUMN_PLACESLATITUDE, latitude);
+								values.put(MySQLiteHelper.COLUMN_ADRESSEID, adresse_id);
+								long insertId = database.insert(MySQLiteHelper.TABLE_PLACES, null, values);
+								//TODO check the utily of autoincrement
+								Cursor cursor = 
+										database.query(
+												MySQLiteHelper.TABLE_PLACES,
+												allColumnsPlaces,
+												MySQLiteHelper.COLUMN_PLACESID+" = "+insertId,
+												null, null, null, null);
+								cursor.moveToFirst();
+								Places p2 = cursorToPlace(cursor);//method at the end of the class
+								cursor.close();
+								return p2;
+					        }
+					    }
+
+						/**
+						 * update a Image
+						 * @return image updated
+						 */
+						public Places updatePlace(Places place, String nom, double latitude, double longitude, long adresse_id){
+							ContentValues values = new ContentValues();
+				        	values.put(MySQLiteHelper.COLUMN_PLACESNOM, nom);
+							values.put(MySQLiteHelper.COLUMN_PLACESLONGITUDE, longitude);
+							values.put(MySQLiteHelper.COLUMN_PLACESLATITUDE, latitude);
+							values.put(MySQLiteHelper.COLUMN_ADRESSEID, adresse_id);
+
+							database.update(MySQLiteHelper.TABLE_PLACES, values, MySQLiteHelper.COLUMN_PLACESID + " = " +place.getPlaces_id(), null);
+							return getPlaceWithId(place.getPlaces_id());
+						}
+
+						/**
+						 * knowing a Mot_id, we want to get the image itself
+						 * @param id is the id of the image we are looking for
+						 * @return c1 is the image we were looking for
+						 */
+					    public Places getPlaceWithId(String id){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_PLACES, allColumnsPlaces, MySQLiteHelper.COLUMN_PLACESID + " = \"" + id +"\"", null, null, null, null);
+					        c.moveToFirst();
+					        Places p1 = cursorToPlace(c);
+					        c.close();
+					        return p1;
+					    }
+
+						/**
+						 * knowing an id we test if this image exists
+						 * @param id is the id of the image we ask
+						 * @return boolean says if the image with this id exists or not
+						 */
+					    public Boolean existPlaceWithId(String id){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_PLACES, allColumnsPlaces, MySQLiteHelper.COLUMN_PLACESID + " = \"" + id +"\"", null, null, null, null);
+					        if(c.getCount()>0){
+					            c.close();
+					            return true;
+					        }
+					        else {
+					            c.close();
+					            return false;
+					        }
+					    }
+					    
+
+					    /**
+					     * deleting an Image
+					     * @param i1 is the image we want to delete
+					     */
+						public void deletePlace(Places p1){
+							String id = p1.getPlaces_id();
+							System.out.println("Image deleted with id: "+ id);
+							database.delete(MySQLiteHelper.TABLE_IMAGE, MySQLiteHelper.COLUMN_IMAGEID+" = "+ id, null);
+						}
+						
+						
+						/**
+						 * convert a cursor to an image
+						 * @param cursor
+						 * @return image
+						 */
+						private Places cursorToPlace(Cursor cursor) {
+						    Places p1 = new Places();
+						    p1.setPlaces_id(cursor.getString(0));
+						    p1.setPlaces_nom(cursor.getString(1));
+						    p1.setPlaces_latitude(cursor.getDouble(2));
+						    p1.setPlaces_longitude(cursor.getDouble(3));
+						    p1.setAdresse_id(cursor.getLong(4));
+						    return p1;
+						}
 					/**
 					 * create a Marqueur pour les mots
 					 * 
@@ -649,7 +897,7 @@ public  class LocalDataSource {
 					public Marqueur createMarqueurMot(long marqueurId, String reference, long motId, long utilisateurId){
 						Boolean exist = existMarqueurWithId(marqueurId);
 				        
-				        if(exist == true){
+				        if(exist){
 				        	Marqueur existMarqueur = getMarqueurWithId(marqueurId);
 				        	Marqueur updatedMarqueur = updateMarqueur(existMarqueur);
 				            return updatedMarqueur;

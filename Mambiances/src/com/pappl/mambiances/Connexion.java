@@ -113,11 +113,11 @@ public class Connexion extends Activity {
 	          /***************************************/
 	          /* Lancement de l'Activity "DashBoard" */
 	          /***************************************/
-	
+	/*
 	          Intent dashboard = new Intent(getApplicationContext(), Dashboard.class);
 	          dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	          startActivity(dashboard);
-	
+	*/		  
 	          /****************************/
 	          /* Ferme l'Activity "Connexion" */
 	          /****************************/

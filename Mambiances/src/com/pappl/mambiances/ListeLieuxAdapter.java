@@ -51,9 +51,9 @@ public class ListeLieuxAdapter<T> extends ArrayAdapter<T> {
 		@Override
 		public void onClick(View v) {
 			String ref = lieu.getReference();
-			Intent saisieMarqueur = new Intent(context, SaisieMarqueur.class);
-  	      	saisieMarqueur.putExtra("REFERENCE_LIEU", ref);
-  	      	context.startActivity(saisieMarqueur);
+			Intent ambianceLieu = new Intent(context, AmbianceLieu.class);
+  	      	ambianceLieu.putExtra("REFERENCE_LIEU", ref);
+  	      	context.startActivity(ambianceLieu);
 		}
 	});
 	

@@ -239,16 +239,25 @@ containing a value of this type.
     }
     public static final class id {
         public static final int  result=0x7f060018;
-        public static final int action_search=0x7f06001d;
-        public static final int action_settings=0x7f06001c;
+        public static final int action_search=0x7f060026;
+        public static final int action_settings=0x7f060025;
         public static final int addButton=0x7f060017;
-        public static final int boutonDetailsLieu=0x7f06001b;
+        public static final int boutonDetailsLieu=0x7f060024;
         public static final int bouton_envoyer=0x7f06001a;
+        public static final int btnLinkToLoginScreen=0x7f060023;
+        public static final int btnLinkToRegisterScreen=0x7f06001f;
+        public static final int btnSeConnecter=0x7f06001e;
+        public static final int btnValider=0x7f060022;
+        public static final int cbSeSouvenir=0x7f06001d;
         public static final int curseurAffiche=0x7f06000f;
+        public static final int enregistrerLogin=0x7f060020;
+        public static final int enregistrerMotDePasse=0x7f060021;
         public static final int hybrid=0x7f060004;
         public static final int imageLieu=0x7f060005;
         public static final int listeLieux=0x7f060014;
         public static final int locButton=0x7f060016;
+        public static final int login=0x7f06001b;
+        public static final int loginPassword=0x7f06001c;
         public static final int mesCurseurs=0x7f06000d;
         public static final int mesMots=0x7f060009;
         public static final int monAmbiance=0x7f060008;
@@ -278,7 +287,9 @@ containing a value of this type.
         public static final int activity_liste_lieux=0x7f030001;
         public static final int activity_map=0x7f030002;
         public static final int activity_saisie_marqueur=0x7f030003;
-        public static final int simple_list_item_2_button=0x7f030004;
+        public static final int connexion=0x7f030004;
+        public static final int enregistrer=0x7f030005;
+        public static final int simple_list_item_2_button=0x7f030006;
     }
     public static final class menu {
         public static final int ambiance_lieu=0x7f0c0000;
@@ -383,22 +394,37 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f070013;
+        public static final int connexion=0x7f070039;
+        public static final int connexion_=0x7f07003a;
+        public static final int dejaenregistre=0x7f070037;
+        public static final int enregistrer=0x7f070034;
+        public static final int fulllogin=0x7f070035;
         public static final int hello_world=0x7f07001d;
+        public static final int logout=0x7f07002f;
         public static final int monMot1=0x7f070024;
         public static final int monMot2=0x7f070025;
         public static final int monMot3=0x7f070026;
         public static final int motPop1=0x7f070028;
         public static final int motPop2=0x7f070029;
         public static final int motPop3=0x7f07002a;
+        public static final int motdepasse=0x7f070036;
+        public static final int new_account=0x7f07003b;
         public static final int nomCurseurAffiche=0x7f070027;
         public static final int nomLieu=0x7f070022;
+        public static final int notification=0x7f070031;
+        public static final int notification_desc=0x7f070033;
+        public static final int notification_title=0x7f070032;
         public static final int search_hint=0x7f07001e;
         public static final int search_settings=0x7f07001f;
+        public static final int sesouvenir=0x7f070030;
         public static final int shortDescrLieu=0x7f070021;
         public static final int title_activity_ambiance_lieu=0x7f070020;
+        public static final int title_activity_connexion=0x7f07002e;
+        public static final int title_activity_enregistrer=0x7f07002d;
         public static final int title_activity_liste_lieux=0x7f07002b;
         public static final int title_activity_saisie_marqueur=0x7f07002c;
         public static final int typeLieu=0x7f070023;
+        public static final int valider_=0x7f070038;
     }
     public static final class style {
         /** 

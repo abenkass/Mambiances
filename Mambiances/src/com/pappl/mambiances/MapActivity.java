@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pappl.mambiances.db.LocalDataSource;
  
 import android.location.Location;
 import android.location.LocationListener;
@@ -61,8 +62,14 @@ public class MapActivity extends Activity implements LocationListener, LoaderCal
 	
 	private MarkerOptions[] places;
 	
+	public static LocalDataSource datasource;
+	
 	@Override
 	public void onLocationChanged(Location location) {
+		
+		//Initialisation de la bdd locale
+		datasource = new LocalDataSource(this);
+		
 	    Log.v("MyMapActivity", "location changed");
 	    locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
