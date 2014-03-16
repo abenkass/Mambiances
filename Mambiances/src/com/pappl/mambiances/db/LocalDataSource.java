@@ -1,6 +1,7 @@
 package com.pappl.mambiances.db;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.content.ContentValues;
@@ -162,6 +163,19 @@ public  class LocalDataSource {
 	        c.close();
 	        return u1;
 	    }
+	    
+	    /**
+		 * knowing a utilisateur_login, we want to get the utilisateur itself
+		 * @param id is the id of the utilisateur we are looking for
+		 * @return u1 is the utilisateur we were looking for
+		 */
+	    public Utilisateur getUtilisateurWithLogin(String login){
+	        Cursor c = database.query(MySQLiteHelper.TABLE_UTILISATEUR, allColumnsUtilisateur, MySQLiteHelper.COLUMN_UTILISATEURLOGIN + " = \"" + login +"\"", null, null, null, null);
+	        c.moveToFirst();
+	        Utilisateur u1 = cursorToUtilisateur(c);
+	        c.close();
+	        return u1;
+	    }
 
 		/**
 		 * knowing an id we test if this utilisateur exists
@@ -204,8 +218,9 @@ public  class LocalDataSource {
 		 * @return boolean says if the utilisateur with this login exists or not
 		 */
 	    public Boolean correctUtilisateur(String login, String mdp){
-	        Cursor c = database.rawQuery("select " + MySQLiteHelper.COLUMN_UTILISATEURLOGIN +"and" +MySQLiteHelper.COLUMN_UTILISATEURMDP + " from " + MySQLiteHelper.TABLE_UTILISATEUR + " where = ?", new String[]{"login", "mdp"});
-	        if(c.getCount()>0){
+	        //Cursor c = database.rawQuery("select " + MySQLiteHelper.COLUMN_UTILISATEURLOGIN +", " +MySQLiteHelper.COLUMN_UTILISATEURMDP + " from " + MySQLiteHelper.TABLE_UTILISATEUR + " where = ?", new String[]{"login", "mdp"});
+	        Cursor c = database.query(MySQLiteHelper.TABLE_UTILISATEUR, allColumnsUtilisateur, MySQLiteHelper.COLUMN_UTILISATEURID + "=? AND " + MySQLiteHelper.COLUMN_UTILISATEURMDP + "=?", new String[]{"login", "mdp"}, null, null, null);
+	    	if(c.getCount()>0){
 	            c.close();
 	            return true;
 	        }
@@ -502,6 +517,21 @@ public  class LocalDataSource {
 				    return m1;
 				}
 				
+
+				/**
+				 * knowing a Mot_id, we want to get the mot itself
+				 * @param id is the id of the mot we are looking for
+				 * @return c1 is the mot we were looking for
+				 */
+			    public Mot getMotWithMarqueurId(long id){
+			        Cursor c = database.query(MySQLiteHelper.TABLE_MOT, allColumnsMots, MySQLiteHelper.COLUMN_MARQUEURID + " = \"" + id +"\"", null, null, null, null);
+			        c.moveToFirst();
+			        Mot m1 = cursorToMot(c);
+			        c.close();
+			        return m1;
+			    }
+				
+				
 				/**
 				   * Méthode pour créer une image
 				   */
@@ -769,8 +799,8 @@ public  class LocalDataSource {
 						 * creating a new Image in the database
 						 * @return image is the created image
 						 */
-						public Places createPlace (String id, String nom, double latitude, double longitude, long adresse_id){
-					        Boolean exist = existPlaceWithId(id);
+						public Places createPlace (long id, String nom, double latitude, double longitude, long adresse_id){
+					        Boolean exist = existPlaceWithLatLng(latitude, longitude);
 					        
 					        if(exist){
 					        	Places existPlace = getPlaceWithId(id);
@@ -819,8 +849,22 @@ public  class LocalDataSource {
 						 * @param id is the id of the image we are looking for
 						 * @return c1 is the image we were looking for
 						 */
-					    public Places getPlaceWithId(String id){
+					    public Places getPlaceWithId(long id){
 					        Cursor c = database.query(MySQLiteHelper.TABLE_PLACES, allColumnsPlaces, MySQLiteHelper.COLUMN_PLACESID + " = \"" + id +"\"", null, null, null, null);
+					        c.moveToFirst();
+					        Places p1 = cursorToPlace(c);
+					        c.close();
+					        return p1;
+					    }
+					    
+					    /**
+						 * knowing a Mot_id, we want to get the image itself
+						 * @param id is the id of the image we are looking for
+						 * @return c1 is the image we were looking for
+						 */
+					    
+					    public Places getPlaceWithLatLng(double lat, double lng){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_PLACES, allColumnsPlaces, MySQLiteHelper.COLUMN_PLACESLATITUDE + " = \"" + lat +"\"" + " AND " + MySQLiteHelper.COLUMN_PLACESLONGITUDE + " = \"" + lng +"\"", null, null, null, null);
 					        c.moveToFirst();
 					        Places p1 = cursorToPlace(c);
 					        c.close();
@@ -832,8 +876,8 @@ public  class LocalDataSource {
 						 * @param id is the id of the image we ask
 						 * @return boolean says if the image with this id exists or not
 						 */
-					    public Boolean existPlaceWithId(String id){
-					        Cursor c = database.query(MySQLiteHelper.TABLE_PLACES, allColumnsPlaces, MySQLiteHelper.COLUMN_PLACESID + " = \"" + id +"\"", null, null, null, null);
+					    public Boolean existPlaceWithLatLng(double lat, double lng){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_PLACES, allColumnsPlaces, MySQLiteHelper.COLUMN_PLACESLATITUDE + " = \"" + lat +"\"" + " AND " + MySQLiteHelper.COLUMN_PLACESLONGITUDE + " = \"" + lng +"\"", null, null, null, null);
 					        if(c.getCount()>0){
 					            c.close();
 					            return true;
@@ -850,7 +894,7 @@ public  class LocalDataSource {
 					     * @param i1 is the image we want to delete
 					     */
 						public void deletePlace(Places p1){
-							String id = p1.getPlaces_id();
+							long id = p1.getPlaces_id();
 							System.out.println("Image deleted with id: "+ id);
 							database.delete(MySQLiteHelper.TABLE_IMAGE, MySQLiteHelper.COLUMN_IMAGEID+" = "+ id, null);
 						}
@@ -863,7 +907,7 @@ public  class LocalDataSource {
 						 */
 						private Places cursorToPlace(Cursor cursor) {
 						    Places p1 = new Places();
-						    p1.setPlaces_id(cursor.getString(0));
+						    p1.setPlaces_id(cursor.getLong(0));
 						    p1.setPlaces_nom(cursor.getString(1));
 						    p1.setPlaces_latitude(cursor.getDouble(2));
 						    p1.setPlaces_longitude(cursor.getDouble(3));
@@ -871,16 +915,16 @@ public  class LocalDataSource {
 						    return p1;
 						}
 					/**
-					 * create a Marqueur pour les mots
+					 * create a Marqueur
 					 * 
 					 */
-					public Marqueur createMarqueurMot(String reference, long motId, long utilisateurId){
+					public Marqueur createMarqueur(long placesId, long utilisateurId){
 						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Date dateMnt = new Date(System.currentTimeMillis());
 						ContentValues values = new ContentValues();
 					    values.put(MySQLiteHelper.COLUMN_MARQUEURDATECREATION, dateFormat.format(dateMnt));
 					    values.put(MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, dateFormat.format(dateMnt));
-					    values.put(MySQLiteHelper.COLUMN_PLACESID, reference);
+					    values.put(MySQLiteHelper.COLUMN_PLACESID, placesId);
 					    values.put(MySQLiteHelper.COLUMN_UTILISATEURID, utilisateurId);
 					    long insertId = database.insert(MySQLiteHelper.TABLE_MARQUEUR, null,
 					        values);
@@ -894,7 +938,7 @@ public  class LocalDataSource {
 
 					}
 					
-					public Marqueur createMarqueurMot(long marqueurId, String reference, long motId, long utilisateurId){
+					public Marqueur createMarqueur(long marqueurId, long placesId, long utilisateurId){
 						Boolean exist = existMarqueurWithId(marqueurId);
 				        
 				        if(exist){
@@ -908,7 +952,7 @@ public  class LocalDataSource {
 							ContentValues values = new ContentValues();
 						    values.put(MySQLiteHelper.COLUMN_MARQUEURDATECREATION, dateFormat.format(dateMnt));
 						    values.put(MySQLiteHelper.COLUMN_MARQUEURDATEDERNIEREEDITION, dateFormat.format(dateMnt));
-						    values.put(MySQLiteHelper.COLUMN_PLACESID, reference);
+						    values.put(MySQLiteHelper.COLUMN_PLACESID, placesId);
 						    values.put(MySQLiteHelper.COLUMN_UTILISATEURID, utilisateurId);
 						    long insertId = database.insert(MySQLiteHelper.TABLE_MARQUEUR, null,
 						        values);
@@ -945,6 +989,20 @@ public  class LocalDataSource {
 				    public Marqueur getMarqueurWithId(Long id){
 				        Cursor c = database.query(MySQLiteHelper.TABLE_MARQUEUR, allColumnsMarqueur, MySQLiteHelper.COLUMN_MARQUEURID + " = \"" + id +"\"", null, null, null, null);
 				        c.moveToFirst();
+				        Marqueur m1 = cursorToMarqueur(c);
+				        c.close();
+				        return m1;
+				    }
+				    
+				    public Marqueur getMonMarqueur(long utilisateur_id, long places_id, int position){
+				        Cursor c = database.query(MySQLiteHelper.TABLE_MARQUEUR, allColumnsMarqueur,
+				        		MySQLiteHelper.COLUMN_UTILISATEURID + " = \"" + utilisateur_id +"\"" + 
+				        		" AND " +
+				        		MySQLiteHelper.COLUMN_PLACESID + " = \"" + places_id + "\"" , null, null, null, null);
+				        c.moveToFirst();
+				        for (int i=0; i<position; i++){
+				        	c.moveToNext();
+				        }
 				        Marqueur m1 = cursorToMarqueur(c);
 				        c.close();
 				        return m1;

@@ -5,7 +5,7 @@ import android.content.ContentValues;
 public class Places extends DAO{
 
 		//Attributes
-		private String places_id;
+		private long places_id;
 		
 		private String places_nom;
 		
@@ -18,7 +18,7 @@ public class Places extends DAO{
 	//Constructor
 		public Places() {}
 		
-		public Places(String places_id, String places_nom, double places_latitude,
+		public Places(long places_id, String places_nom, double places_latitude,
 				double places_longitude, long adresse_id) {
 			super();
 			this.places_id = places_id;
@@ -29,11 +29,11 @@ public class Places extends DAO{
 		}
 	
 	//Getters and setters
-		public String getPlaces_id() {
+		public long getPlaces_id() {
 			return places_id;
 		}
 
-		public void setPlaces_id(String places_id) {
+		public void setPlaces_id(long places_id) {
 			this.places_id = places_id;
 		}
 

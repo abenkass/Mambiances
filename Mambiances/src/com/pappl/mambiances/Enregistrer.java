@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class Enregistrer extends Activity {
 	  
@@ -19,13 +20,15 @@ public class Enregistrer extends Activity {
 	  EditText inputLogin;
 	  EditText inputMotDePasse;
 	  
+	  private LocalDataSource datasource;
+	  
 	  @Override
 	  public void onCreate(Bundle savedInstanceState) 
 	  {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.enregistrer);   
   	  	
-	    final LocalDataSource  db = new LocalDataSource(this);
+	    datasource = Connexion.datasource;
 
 	    
 	    /********************************/
@@ -52,17 +55,26 @@ public class Enregistrer extends Activity {
 
 	      public void onClick(View view) 
 	      {
-	  	      db.open();
+	  	      datasource.open();
 	        	  
 		       String login = inputLogin.getText().toString();
 		       String password = inputMotDePasse.getText().toString();
 	      
-		       if(isValidPassword(password) && isValidLogin(db,login))
+		       if(!isValidLogin(datasource,login))
 		       {
-		    	   db.createUtilisateur(login,password);
+		    	   Toast.makeText(getApplicationContext(), 
+                           "Le nom d'utilisateur existe déjà.", Toast.LENGTH_LONG).show(); 
+		       }else if(!isValidPassword(password)){
+		    	   Toast.makeText(getApplicationContext(), 
+                           "Le mot de passe n'est pas assez long", Toast.LENGTH_LONG).show(); 
 		       }else{
-		    	   
+		    	   datasource.createUtilisateur(login,password);
+		    	   Toast.makeText(getApplicationContext(), 
+                           "Compte créé. Vous pouvez vous connecter avec vos identifiants.", Toast.LENGTH_LONG).show();
+		    	   Intent i = new Intent(getApplicationContext(),  Connexion.class);
+			       startActivity(i);
 		       }
+		       datasource.close();
 	      }
 	    }); 
 	        
@@ -82,7 +94,7 @@ public class Enregistrer extends Activity {
 	          startActivity(i);
 	
 	          /****************************/
-	          /* Ferme l'Activity "Connexion" */
+	          /* Ferme l'Activity "Enregistrer" */
 	          /****************************/
 	
 	          finish();
@@ -95,7 +107,7 @@ public class Enregistrer extends Activity {
 	  /******************************************************/ 
 	  public static boolean isValidPassword(String password)
 	  {
-	    if(password.length() == 8)
+	    if(password.length() > 8)
 	      return true;
 	    else
 	      return false;

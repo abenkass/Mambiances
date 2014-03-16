@@ -62,13 +62,10 @@ public class MapActivity extends Activity implements LocationListener, LoaderCal
 	
 	private MarkerOptions[] places;
 	
-	public static LocalDataSource datasource;
+	private String utilisateur;
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		
-		//Initialisation de la bdd locale
-		datasource = new LocalDataSource(this);
 		
 	    Log.v("MyMapActivity", "location changed");
 	    locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -185,7 +182,7 @@ public class MapActivity extends Activity implements LocationListener, LoaderCal
 		shopIcon = R.drawable.green_point;
 		otherIcon = R.drawable.purple_point;
 		
-		handleIntent(getIntent());
+		utilisateur = getIntent().getExtras().getString("LOGIN");
 		
 		findViewById(R.id.locButton).setOnClickListener(locButton_OnClickListener);
 		findViewById(R.id.addButton).setOnClickListener(addButton_OnClickListener);
@@ -245,6 +242,7 @@ public class MapActivity extends Activity implements LocationListener, LoaderCal
 			// TODO Auto-generated method stub
 			
 			Intent ListeLieux = new Intent(getApplicationContext(), ListeLieuxActivity.class);
+			ListeLieux.putExtra("LOGIN", utilisateur);
 			startActivity(ListeLieux);
 		}
 	};

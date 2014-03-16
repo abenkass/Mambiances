@@ -7,6 +7,9 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="19" />
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+   	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <permission
         android:name="com.pappl.main.permission.MAPS_RECEIVE"
@@ -30,7 +33,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.pappl.mambiances.MapActivity"
+            android:name="com.pappl.mambiances.Connexion"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +46,7 @@
             <!-- Points to searchable activity -->
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".MapActivity" />
+                android:value=".Connexion" />
 
             <!-- Points to searchable meta data -->
             <meta-data
@@ -82,8 +85,8 @@
             android:label="@string/title_activity_enregistrer" >
         </activity>
         <activity
-            android:name="com.pappl.mambiances.Connexion"
-            android:label="@string/title_activity_connexion" >
+            android:name="com.pappl.mambiances.MapActivity"
+            android:label="@string/title_activity_mapactivity" >
         </activity>
     </application>
 

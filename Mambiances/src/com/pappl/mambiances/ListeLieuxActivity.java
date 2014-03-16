@@ -59,6 +59,8 @@ public class ListeLieuxActivity extends Activity {
 	
 	private LocalDataSource datasource;
 	
+	private String utilisateur;
+	
 	private class GetPlaces extends AsyncTask<String, Void, String> {
 		//fetch and parse place data
 		@Override
@@ -168,8 +170,10 @@ public class ListeLieuxActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_liste_lieux);
 	    
-	    datasource = MapActivity.datasource;
+	    datasource = Connexion.datasource;
 	    datasource.open();
+	    
+	    utilisateur = getIntent().getExtras().getString("LOGIN");
 	    
 	    locMan = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		
@@ -197,18 +201,20 @@ public class ListeLieuxActivity extends Activity {
 	    	
 	    	lieu.setNom(nom);
 	    	lieu.setAdresse(adr);
-	    	lieu.setReference(ref);
+	    	lieu.setUtilisateur(utilisateur);
+	    	lieu.setLatitude(lati);
+	    	lieu.setLongitude(lngi);
 	    	lieux.add(lieu);
 	    	
 	    	//TODO créer une Adresse, créer un Places et alimenter
-	    	Boolean exist = datasource.existPlaceWithId(ref);
+	    	Boolean exist = datasource.existPlaceWithLatLng(lati, lngi);
 	    	
 	    	if (exist){
 	    	}else{
 	    		try {
 	    			Adresse adresse = datasource.createAdresse(adr);
 	    			long adrId = adresse.getAdresse_id();
-	    			datasource.createPlace (ref, nom, lati, lngi, adrId);
+	    			datasource.createPlace (nom, lati, lngi, adrId);
 	    		}
 	    		catch(Exception e){
 				    e.printStackTrace();
@@ -225,9 +231,14 @@ public class ListeLieuxActivity extends Activity {
 
 	    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 	    		  System.out.println("pushed");
-	    	      String ref = lieuxAdresses[position][2];
+	    	      double lat = lieuxAdressesD[position][0];
+	    	      double lng = lieuxAdressesD[position][1];
+	    	      String latStr = String.valueOf(lat);
+	    	      String lngStr = String.valueOf(lng);
 	    	      Intent saisieMarqueur = new Intent(getApplicationContext(), SaisieMarqueur.class);
-	    	      saisieMarqueur.putExtra("REFERENCE_LIEU", ref);
+	    	      saisieMarqueur.putExtra("LATITUDE", latStr);
+	    	      saisieMarqueur.putExtra("LONGITUDE", lngStr);
+	    	      saisieMarqueur.putExtra("LOGIN", utilisateur);
 	    	      startActivity(saisieMarqueur);
 	    	      
 	    	   }

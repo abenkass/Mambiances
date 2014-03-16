@@ -8,6 +8,7 @@
     <string name="search_hint">Search Places</string>
     <string name="search_settings">Search Places</string>
     <string name="title_activity_ambiance_lieu">AmbianceLieu</string>
+    <string name="title_activity_mapactivity">Map</string>
     <string name="shortDescrLieu">Le nid</string>
     <string name="nomLieu">Le nid</string>
     <string name="typeLieu">Bar</string>
