@@ -2,6 +2,7 @@ package com.pappl.mambiances.db;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import android.content.ContentValues;
@@ -272,7 +273,7 @@ public  class LocalDataSource {
 		   * Méthode pour créer un curseur
 		   */
 		  
-		  public Curseur createCurseur (double valeur, String nom, long marqueurId){
+		  public Curseur createCurseur (int valeur, String nom, long marqueurId){
 				ContentValues values = new ContentValues(); 
 				values.put(MySQLiteHelper.COLUMN_CURSEURVALEUR, valeur);
 				values.put(MySQLiteHelper.COLUMN_CURSEURNOM, nom);
@@ -296,12 +297,12 @@ public  class LocalDataSource {
 			 * creating a new Curseur in the database
 			 * @return curseur is the created curseur
 			 */
-			public Curseur createCurseur (long id, double valeur, String nom, long marqueurId){
+			public Curseur createCurseur (long id, int valeur, String nom, long marqueurId){
 		        Boolean exist = existCurseurWithId(id);
 		        
 		        if(exist){
 		        	Curseur existCurseur = getCurseurWithId(id);
-		        	Curseur updatedCurseur = updateCurseur(existCurseur, valeur, nom);
+		        	Curseur updatedCurseur = updateCurseur(existCurseur, valeur);
 		            return updatedCurseur;
 		        }
 		        else {
@@ -328,10 +329,9 @@ public  class LocalDataSource {
 			
 			//TODO après test, voir s'il faut ajouter le marqueurId
 			
-			public Curseur updateCurseur(Curseur curseur, double valeur, String nom){
+			public Curseur updateCurseur(Curseur curseur, int valeur){
 				ContentValues values = new ContentValues();
 				values.put(MySQLiteHelper.COLUMN_CURSEURVALEUR, valeur);
-				values.put(MySQLiteHelper.COLUMN_CURSEURNOM, nom);
 
 				database.update(MySQLiteHelper.TABLE_CURSEUR, values, MySQLiteHelper.COLUMN_CURSEURID + " = " +curseur.getCurseur_id(), null);
 				return getCurseurWithId(curseur.getCurseur_id());
@@ -343,7 +343,7 @@ public  class LocalDataSource {
 			 * @param id is the id of the curseur we are looking for
 			 * @return c1 is the curseur we were looking for
 			 */
-		    public Curseur getCurseurWithId(Long id){
+		    public Curseur getCurseurWithId(long id){
 		        Cursor c = database.query(MySQLiteHelper.TABLE_CURSEUR, allColumnsCurseur, MySQLiteHelper.COLUMN_CURSEURID + " = \"" + id +"\"", null, null, null, null);
 		        c.moveToFirst();
 		        Curseur c1 = cursorToCurseur(c);
@@ -356,7 +356,7 @@ public  class LocalDataSource {
 			 * @param id is the id of the curseur we ask
 			 * @return boolean says if the curseur with this id exists or not
 			 */
-		    public Boolean existCurseurWithId(Long id){
+		    public Boolean existCurseurWithId(long id){
 		        Cursor c = database.query(MySQLiteHelper.TABLE_CURSEUR, allColumnsCurseur, MySQLiteHelper.COLUMN_CURSEURID + " = \"" + id +"\"", null, null, null, null);
 		        if(c.getCount()>0){
 		            c.close();
@@ -390,11 +390,80 @@ public  class LocalDataSource {
 			private Curseur cursorToCurseur(Cursor cursor) {
 			    Curseur c1 = new Curseur();
 			    c1.setCurseur_id(cursor.getLong(0));
-			    c1.setCurseur_valeur(cursor.getDouble(1));
+			    c1.setCurseur_valeur(cursor.getInt(1));
 			    c1.setCurseur_nom(cursor.getString(2));
 			    c1.setMarqueur_id(cursor.getLong(3));
 			    return c1;
 			}
+			
+			public String[] getCurseursARemplir(long utilisateurId, long placesId){
+				final String MY_QUERY = "select c.curseur_id, c.curseur_valeur, c.curseur_nom, c.marqueur_id  " +
+						"from curseur as c inner join marqueur as m on c.marqueur_id = m.marqueur_id " +
+						"where m.utilisateur_id =? " + 
+						"and m.places_id =?";
+				Cursor c = database.rawQuery(MY_QUERY, new String[]{String.valueOf(utilisateurId), String.valueOf(placesId)});
+		    	try{
+		    		c.moveToFirst();
+		    	}catch(Exception e){
+		    		
+		    	}
+		    	String[] nomCurseurs = {"Cozy", "Palpitant", "Formel", "Accueillant", "Sécurisant", "Inspirant", "Intime", "Animé", "Luxueux", "Chill", "Personnel", "Romantique", "Ennuyeux", "Chaleureux", "Business", "Reposant"};
+		    	ArrayList<String> liste = new ArrayList<String>();
+		    	for(String s : nomCurseurs){
+		    		liste.add(s);
+		    	}
+		    	Boolean notLast = true;
+		    	while (notLast){
+		    		Curseur curseur = cursorToCurseur(c);
+		    		String cursNom = curseur.getCurseur_nom();
+		    		for (int i =liste.size() - 1; i>=0; i--){
+		    			if (liste.get(i)==cursNom){
+		    				liste.remove(i);
+		    			}
+		    		}
+		    		notLast = c.moveToNext();
+		    	}
+		        String[] aRemplir = new String[liste.size()];
+		    	aRemplir = liste.toArray(aRemplir);
+		    	
+		    	return aRemplir;
+		    }
+			
+			public Curseur[] getMesCurseurs(long utilisateurId, long placesId){
+				final String MY_QUERY = "select c.curseur_id, c.curseur_valeur, c.curseur_nom, c.marqueur_id  " +
+						"from curseur as c inner join marqueur as m on c.marqueur_id = m.marqueur_id " +
+						"where m.utilisateur_id =? " + 
+						"and m.places_id =?";
+				Cursor c = database.rawQuery(MY_QUERY, new String[]{String.valueOf(utilisateurId), String.valueOf(placesId)});
+		    	try{
+		    		c.moveToFirst();
+		    	}catch(Exception e){
+		    		
+		    	}
+		    	ArrayList<Curseur> liste = new ArrayList<Curseur>();
+		    	Boolean notLast = true;
+		    	while (notLast){
+		    		Curseur curseur = cursorToCurseur(c);
+		    		liste.add(curseur);
+		    		notLast = c.moveToNext();
+		    	}
+		        Curseur[] mesCurseurs = new Curseur[liste.size()];
+		    	mesCurseurs = liste.toArray(mesCurseurs);
+		    	
+		    	return mesCurseurs;
+		    }
+			
+			public Curseur getCurseurWithNom(long utilisateurId, long placesId, String curseurNom){
+				final String MY_QUERY = "select c.curseur_id, c.curseur_valeur, c.curseur_nom, c.marqueur_id " +
+						"from curseur as c inner join marqueur as m on c.marqueur_id = m.marqueur_id" +
+						"where m.utilisateur_id =?" + 
+						"and m.places_id =?" +
+						"and c.curseur_nom =?";
+				Cursor c = database.rawQuery(MY_QUERY, new String[]{String.valueOf(utilisateurId), String.valueOf(placesId), curseurNom});
+		    	c.moveToFirst();
+		    	Curseur curseur = cursorToCurseur(c);
+		    	return curseur;
+		    }
 			
 			/**
 			   * Méthode pour créer un mot
@@ -519,8 +588,8 @@ public  class LocalDataSource {
 				
 
 				/**
-				 * knowing a Mot_id, we want to get the mot itself
-				 * @param id is the id of the mot we are looking for
+				 * knowing a marqueur_id, we want to get the mot itself
+				 * @param id is the id of the marqueur linked to the mot we are looking for
 				 * @return c1 is the mot we were looking for
 				 */
 			    public Mot getMotWithMarqueurId(long id){
@@ -531,6 +600,22 @@ public  class LocalDataSource {
 			        return m1;
 			    }
 				
+			    public Mot[] getMesMots(long utilisateurId, long placesId){
+			    	final String MY_QUERY = "SELECT a.mot_id, a.mot, a.marqueur_id FROM "+ MySQLiteHelper.TABLE_MOT + " a INNER JOIN "+ MySQLiteHelper.TABLE_MARQUEUR + "  b ON a." + MySQLiteHelper.COLUMN_MARQUEURID + "=b." + MySQLiteHelper.COLUMN_MARQUEURID + " WHERE b." + MySQLiteHelper.COLUMN_PLACESID +"=? AND " + MySQLiteHelper.COLUMN_UTILISATEURID +"=?";
+			    	Cursor c = database.rawQuery(MY_QUERY, new String[]{String.valueOf(placesId), String.valueOf(utilisateurId)});
+			    	c.moveToFirst();
+			    	ArrayList<Mot> mesMots = new ArrayList<Mot>();
+			    	Boolean notLast = true;
+			    	while (notLast){
+			    		Mot mot = cursorToMot(c);
+			    		mesMots.add(mot);
+			    		notLast = c.moveToNext();
+			    	}
+			    	Mot[] motArr = new Mot[mesMots.size()];
+			    	motArr = mesMots.toArray(motArr);
+			    	
+			    	return motArr;
+			    }
 				
 				/**
 				   * Méthode pour créer une image

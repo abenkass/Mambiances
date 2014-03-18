@@ -6,7 +6,7 @@ public class Curseur extends DAO{
 
 	private long curseur_id;
 	
-	private double curseur_valeur;
+	private int curseur_valeur;
 	
 	private String curseur_nom;
 	
@@ -16,7 +16,7 @@ public class Curseur extends DAO{
 	
 	public Curseur(){}
 	
-	public Curseur(long curseur_id, double curseur_valeur, String curseur_nom, long marqueur_id) {
+	public Curseur(long curseur_id, int curseur_valeur, String curseur_nom, long marqueur_id) {
 		super();
 		this.curseur_id = curseur_id;
 		this.curseur_valeur = curseur_valeur;
@@ -34,11 +34,11 @@ public class Curseur extends DAO{
 		this.curseur_id = curseur_id;
 	}
 
-	public double getCurseur_valeur() {
+	public int getCurseur_valeur() {
 		return curseur_valeur;
 	}
 
-	public void setCurseur_valeur(double curseur_valeur) {
+	public void setCurseur_valeur(int curseur_valeur) {
 		this.curseur_valeur = curseur_valeur;
 	}
 

@@ -1,5 +1,8 @@
 package com.pappl.mambiances;
 
+import java.util.Random;
+
+import com.pappl.mambiances.db.Curseur;
 import com.pappl.mambiances.db.LocalDataSource;
 import com.pappl.mambiances.db.Marqueur;
 import com.pappl.mambiances.db.Mot;
@@ -9,6 +12,7 @@ import com.pappl.mambiances.db.Utilisateur;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class AmbianceLieu extends Activity {
@@ -27,6 +31,11 @@ public class AmbianceLieu extends Activity {
 	private String lngStr;
 	private double lat;
 	private double lng;
+	
+	private SeekBar seekBar;
+	private Curseur curseurAffiche;
+	private TextView nomCurseurAffiche;
+	private int valSeekBar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,24 +75,40 @@ public class AmbianceLieu extends Activity {
 		Places place = datasource.getPlaceWithLatLng(lat, lng);
 		long placesId = place.getPlaces_id();
 		
-		int position = 0;
-		Marqueur marqueur = datasource.getMonMarqueur(utilisateurId, placesId, position);
-		long marqueurId = marqueur.getMarqueur_id();
-		Mot mot1 = datasource.getMotWithMarqueurId(marqueurId);
+		Mot[] mesMots = datasource.getMesMots(utilisateurId, placesId);
+		int l = mesMots.length;
+		switch (l){
+		case 0 :	monMot1.setText("");
+					monMot3.setText("");
+					monMot2.setText("Pas de mot saisi");
+					break;
+		case 1 : 	monMot2.setText(mesMots[0].getMot());
+					monMot1.setText("");
+					monMot3.setText("");
+					break;
+		case 2 :	monMot1.setText(mesMots[0].getMot());
+					monMot3.setText(mesMots[1].getMot());
+					monMot2.setText("");
+					break;
+		default : 	monMot1.setText(mesMots[0].getMot());
+					monMot2.setText(mesMots[1].getMot());
+					monMot3.setText(mesMots[2].getMot());
+		}
 		
-		position = 1;
-		marqueur = datasource.getMonMarqueur(utilisateurId, placesId, position);
-		marqueurId = marqueur.getMarqueur_id();
-		Mot mot2 = datasource.getMotWithMarqueurId(marqueurId);
+		//Remplir "Mon curseur"
+		nomCurseurAffiche = (TextView) findViewById(R.id.nomCurseurAffiche);
+		seekBar = (SeekBar) findViewById(R.id.curseurAffiche);
 		
-		position = 2;
-		marqueur = datasource.getMonMarqueur(utilisateurId, placesId, position);
-		marqueurId = marqueur.getMarqueur_id();
-		Mot mot3 = datasource.getMotWithMarqueurId(marqueurId);
-	
-		monMot1.setText(mot1.getMot());
-		monMot2.setText(mot2.getMot());
-		monMot3.setText(mot3.getMot());
+		Curseur[] mesCurseurs = datasource.getMesCurseurs(utilisateurId, placesId);
+		int n = mesCurseurs.length;
+		if(n!=0){
+			int p = new Random().nextInt(n);
+			curseurAffiche = mesCurseurs[p];
+			nomCurseurAffiche.setText(curseurAffiche.getCurseur_nom());
+			seekBar.setProgress(curseurAffiche.getCurseur_valeur());
+		}else{
+			nomCurseurAffiche.setText("Aucun marqueur saisi");
+		}
 		
 		datasource.close();
 	}

@@ -272,7 +272,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper{
 					+ COLUMN_ADRESSENUMERORUE + " text not null, " 
 					+ COLUMN_ADRESSEVILLE + " text not null, " 
 					+ COLUMN_ADRESSECODEPOSTAL + " INTEGER " */
-					+ COLUMN_ADRESSENOM + " text not null"
+					+ COLUMN_ADRESSENOM 
 					+"); "
 	;
 	

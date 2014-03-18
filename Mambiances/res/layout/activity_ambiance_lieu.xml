@@ -106,12 +106,11 @@
 	        
 	        <SeekBar 
 	            android:id="@+id/curseurAffiche"
-	            android:progress="@integer/progCurseurAffiche"
 	            android:layout_width="match_parent"
 	            android:layout_height="match_parent"
 	            android:gravity="center"/>	        
 	        
-	    </LinearLayout>"
+	    </LinearLayout>
     </LinearLayout>
   
     <View

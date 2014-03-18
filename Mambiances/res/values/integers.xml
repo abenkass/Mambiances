@@ -2,5 +2,6 @@
 <resources>
     
     <integer name="progCurseurAffiche">15</integer>
+    <integer name="progCurseurSaisi">50</integer>
     
 </resources>

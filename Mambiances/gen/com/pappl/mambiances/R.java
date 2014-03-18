@@ -9,7 +9,7 @@ package com.pappl.mambiances;
 
 public final class R {
     public static final class array {
-        public static final int listeLieux=0x7f0a0000;
+        public static final int listeCurseurs=0x7f0a0000;
     }
     public static final class attr {
         /** 
@@ -239,27 +239,27 @@ containing a value of this type.
         public static final int yellow_point=0x7f02002b;
     }
     public static final class id {
-        public static final int  result=0x7f060019;
-        public static final int action_search=0x7f060027;
-        public static final int action_settings=0x7f060026;
+        public static final int action_search=0x7f060029;
+        public static final int action_settings=0x7f060028;
         public static final int addButton=0x7f060017;
-        public static final int boutonDetailsLieu=0x7f060025;
-        public static final int bouton_envoyer=0x7f06001a;
-        public static final int btnLinkToLoginScreen=0x7f060024;
-        public static final int btnLinkToRegisterScreen=0x7f060020;
-        public static final int btnSeConnecter=0x7f06001f;
-        public static final int btnValider=0x7f060023;
-        public static final int cbSeSouvenir=0x7f06001e;
+        public static final int boutonDetailsLieu=0x7f060027;
+        public static final int bouton_envoyer=0x7f06001c;
+        public static final int btnLinkToLoginScreen=0x7f060026;
+        public static final int btnLinkToRegisterScreen=0x7f060022;
+        public static final int btnSeConnecter=0x7f060021;
+        public static final int btnValider=0x7f060025;
+        public static final int cbSeSouvenir=0x7f060020;
         public static final int curseurAffiche=0x7f06000f;
-        public static final int edtTxt1=0x7f06001b;
-        public static final int enregistrerLogin=0x7f060021;
-        public static final int enregistrerMotDePasse=0x7f060022;
+        public static final int curseurSaisi=0x7f06001b;
+        public static final int edtTxt1=0x7f06001d;
+        public static final int enregistrerLogin=0x7f060023;
+        public static final int enregistrerMotDePasse=0x7f060024;
         public static final int hybrid=0x7f060004;
         public static final int imageLieu=0x7f060005;
         public static final int listeLieux=0x7f060014;
         public static final int locButton=0x7f060016;
-        public static final int login=0x7f06001c;
-        public static final int loginPassword=0x7f06001d;
+        public static final int login=0x7f06001e;
+        public static final int loginPassword=0x7f06001f;
         public static final int mesCurseurs=0x7f06000d;
         public static final int mesMots=0x7f060009;
         public static final int monAmbiance=0x7f060008;
@@ -272,9 +272,11 @@ containing a value of this type.
         public static final int mots=0x7f060018;
         public static final int motsPopulaires=0x7f060010;
         public static final int nomCurseurAffiche=0x7f06000e;
+        public static final int nomCurseurSaisi=0x7f06001a;
         public static final int nomLieu=0x7f060006;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
+        public static final int result=0x7f060019;
         public static final int satellite=0x7f060002;
         public static final int terrain=0x7f060003;
         public static final int the_map=0x7f060015;
@@ -283,6 +285,7 @@ containing a value of this type.
     public static final class integer {
         public static final int google_play_services_version=0x7f080000;
         public static final int progCurseurAffiche=0x7f080001;
+        public static final int progCurseurSaisi=0x7f080002;
     }
     public static final class layout {
         public static final int activity_ambiance_lieu=0x7f030000;
