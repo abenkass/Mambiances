@@ -414,13 +414,18 @@ public  class LocalDataSource {
 		    	}
 		    	Boolean notLast = true;
 		    	while (notLast){
-		    		Curseur curseur = cursorToCurseur(c);
-		    		String cursNom = curseur.getCurseur_nom();
-		    		for (int i =liste.size() - 1; i>=0; i--){
-		    			if (liste.get(i)==cursNom){
-		    				liste.remove(i);
-		    			}
+		    		try{
+		    			Curseur curseur = cursorToCurseur(c);
+		    			String cursNom = curseur.getCurseur_nom();
+			    		for (int i =liste.size() - 1; i>=0; i--){
+			    			if (liste.get(i)==cursNom){
+			    				liste.remove(i);
+			    			}
+			    		}
+		    		}catch(Exception e){
+		    			
 		    		}
+		    		
 		    		notLast = c.moveToNext();
 		    	}
 		        String[] aRemplir = new String[liste.size()];
@@ -443,8 +448,12 @@ public  class LocalDataSource {
 		    	ArrayList<Curseur> liste = new ArrayList<Curseur>();
 		    	Boolean notLast = true;
 		    	while (notLast){
-		    		Curseur curseur = cursorToCurseur(c);
-		    		liste.add(curseur);
+		    		try{
+		    			Curseur curseur = cursorToCurseur(c);
+		    			liste.add(curseur);
+		    		}catch(Exception e){
+		    			
+		    		}
 		    		notLast = c.moveToNext();
 		    	}
 		        Curseur[] mesCurseurs = new Curseur[liste.size()];
@@ -607,8 +616,12 @@ public  class LocalDataSource {
 			    	ArrayList<Mot> mesMots = new ArrayList<Mot>();
 			    	Boolean notLast = true;
 			    	while (notLast){
-			    		Mot mot = cursorToMot(c);
-			    		mesMots.add(mot);
+			    		try{
+			    			Mot mot = cursorToMot(c);
+			    			mesMots.add(mot);
+			    		}catch(Exception e){
+			    			
+			    		}
 			    		notLast = c.moveToNext();
 			    	}
 			    	Mot[] motArr = new Mot[mesMots.size()];

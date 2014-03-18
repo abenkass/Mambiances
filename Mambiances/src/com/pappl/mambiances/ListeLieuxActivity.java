@@ -30,8 +30,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -62,6 +65,8 @@ public class ListeLieuxActivity extends Activity {
 	private String utilisateur;
 	
 	private class GetPlaces extends AsyncTask<String, Void, String> {
+		private final ProgressDialog dialog = new ProgressDialog(ListeLieuxActivity.this);
+		
 		//fetch and parse place data
 		@Override
 		protected String doInBackground(String... placesURL) {
@@ -97,6 +102,13 @@ public class ListeLieuxActivity extends Activity {
 			}
 			return placesBuilder.toString();
 		}
+		
+		@Override
+		protected void onPreExecute(){
+			dialog.setMessage("Processing...");
+			dialog.show();
+		}
+		
 		@Override
 		protected void onPostExecute(String result) {
 		    //parse place data returned from Google Places
@@ -159,7 +171,70 @@ public class ListeLieuxActivity extends Activity {
 			catch (Exception e) {
 			    e.printStackTrace();
 			}
-		
+			
+			datasource = Connexion.datasource;
+			datasource.open();
+			    
+			final ListView listView = (ListView) findViewById(R.id.listeLieux);
+		    
+		    
+		    for(int i = 0 ; i < lieuxAdresses.length ; i++) {
+		    	Lieu lieu = new Lieu();
+		    	String nom = lieuxAdresses[i][0];
+		    	String adr = lieuxAdresses[i][1];
+		    	String ref = lieuxAdresses[i][2];
+		    	double lati = lieuxAdressesD[i][0];
+		    	double lngi = lieuxAdressesD[i][1];
+		    	
+		    	lieu.setNom(nom);
+		    	lieu.setAdresse(adr);
+		    	lieu.setUtilisateur(utilisateur);
+		    	lieu.setLatitude(lati);
+		    	lieu.setLongitude(lngi);
+		    	lieux.add(lieu);
+		    	
+		    	//TODO créer une Adresse, créer un Places et alimenter
+		    	Boolean exist = datasource.existPlaceWithLatLng(lati, lngi);
+		    	
+		    	if (exist){
+		    	}else{
+		    		try {
+		    			Adresse adresse = datasource.createAdresse(adr);
+		    			long adrId = adresse.getAdresse_id();
+		    			datasource.createPlace (nom, lati, lngi, adrId);
+		    		}
+		    		catch(Exception e){
+					    e.printStackTrace();
+					}
+		    
+		    	}
+		    }
+		    ListeLieuxAdapter<Lieu> lieuxAdapter = new ListeLieuxAdapter<Lieu>(getApplicationContext(), 
+		      R.layout.simple_list_item_2_button, lieux);
+		    
+		    listView.setAdapter(lieuxAdapter);
+		    
+		    listView.setOnItemClickListener(new OnItemClickListener() {
+
+		    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		    		  System.out.println("pushed");
+		    	      double lat = lieuxAdressesD[position][0];
+		    	      double lng = lieuxAdressesD[position][1];
+		    	      String latStr = String.valueOf(lat);
+		    	      String lngStr = String.valueOf(lng);
+		    	      Intent saisieMarqueur = new Intent(getApplicationContext(), SaisieMarqueur.class);
+		    	      saisieMarqueur.putExtra("LATITUDE", latStr);
+		    	      saisieMarqueur.putExtra("LONGITUDE", lngStr);
+		    	      saisieMarqueur.putExtra("LOGIN", utilisateur);
+		    	      startActivity(saisieMarqueur);
+		    	      
+		    	   }
+		    	 });
+		    
+		    datasource.close();
+		    
+		    dialog.dismiss();
+		    
 		}
 		
 	}
@@ -169,9 +244,6 @@ public class ListeLieuxActivity extends Activity {
 	  protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_liste_lieux);
-	    
-	    datasource = Connexion.datasource;
-	    datasource.open();
 	    
 	    utilisateur = getIntent().getExtras().getString("LOGIN");
 	    
@@ -188,63 +260,6 @@ public class ListeLieuxActivity extends Activity {
 	    
 	    new GetPlaces().execute(placesNearby);
 	    
-	    final ListView listView = (ListView) findViewById(R.id.listeLieux);
-	    
-	    
-	    for(int i = 0 ; i < lieuxAdresses.length ; i++) {
-	    	Lieu lieu = new Lieu();
-	    	String nom = lieuxAdresses[i][0];
-	    	String adr = lieuxAdresses[i][1];
-	    	String ref = lieuxAdresses[i][2];
-	    	double lati = lieuxAdressesD[i][0];
-	    	double lngi = lieuxAdressesD[i][1];
-	    	
-	    	lieu.setNom(nom);
-	    	lieu.setAdresse(adr);
-	    	lieu.setUtilisateur(utilisateur);
-	    	lieu.setLatitude(lati);
-	    	lieu.setLongitude(lngi);
-	    	lieux.add(lieu);
-	    	
-	    	//TODO créer une Adresse, créer un Places et alimenter
-	    	Boolean exist = datasource.existPlaceWithLatLng(lati, lngi);
-	    	
-	    	if (exist){
-	    	}else{
-	    		try {
-	    			Adresse adresse = datasource.createAdresse(adr);
-	    			long adrId = adresse.getAdresse_id();
-	    			datasource.createPlace (nom, lati, lngi, adrId);
-	    		}
-	    		catch(Exception e){
-				    e.printStackTrace();
-				}
-	    
-	    	}
-	    }
-	    ListeLieuxAdapter<Lieu> lieuxAdapter = new ListeLieuxAdapter<Lieu>(this, 
-	      R.layout.simple_list_item_2_button, lieux);
-	    
-	    listView.setAdapter(lieuxAdapter);
-	    
-	    listView.setOnItemClickListener(new OnItemClickListener() {
-
-	    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	    		  System.out.println("pushed");
-	    	      double lat = lieuxAdressesD[position][0];
-	    	      double lng = lieuxAdressesD[position][1];
-	    	      String latStr = String.valueOf(lat);
-	    	      String lngStr = String.valueOf(lng);
-	    	      Intent saisieMarqueur = new Intent(getApplicationContext(), SaisieMarqueur.class);
-	    	      saisieMarqueur.putExtra("LATITUDE", latStr);
-	    	      saisieMarqueur.putExtra("LONGITUDE", lngStr);
-	    	      saisieMarqueur.putExtra("LOGIN", utilisateur);
-	    	      startActivity(saisieMarqueur);
-	    	      
-	    	   }
-	    	 });
-	    
-	    datasource.close();
 	    
 	    
 	}

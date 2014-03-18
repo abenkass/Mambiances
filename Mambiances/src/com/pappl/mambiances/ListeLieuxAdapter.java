@@ -62,6 +62,7 @@ public class ListeLieuxAdapter<T> extends ArrayAdapter<T> {
   	      	ambianceLieu.putExtra("LATITUDE", latStr);
   	        ambianceLieu.putExtra("LONGITUDE", lngStr);
   	      	ambianceLieu.putExtra("LOGIN", utilisateur);
+  	      	ambianceLieu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
   	      	context.startActivity(ambianceLieu);
 		}
 	});
