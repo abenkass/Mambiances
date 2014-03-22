@@ -55,7 +55,7 @@
         </activity>
 
         <provider
-            android:name="com.pappl.mambiances.PlaceProvider"
+            android:name="com.pappl.utils.PlaceProvider"
             android:authorities="com.pappl.mambiances.PlaceProvider"
             android:exported="false" />
 

@@ -1,4 +1,4 @@
-package com.pappl.mambiances;
+package com.pappl.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 import android.app.SearchManager;
 import android.content.ContentProvider;

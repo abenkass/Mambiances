@@ -241,6 +241,15 @@ public  class LocalDataSource {
 			database.delete(MySQLiteHelper.TABLE_UTILISATEUR, MySQLiteHelper.COLUMN_UTILISATEURID+" = "+ id, null);
 		}
 		
+		/**
+	     * deleting all Utilisateur
+	     */
+		public void clearUtilisateur(){
+			System.out.println("Utilisateur cleared");
+			database.execSQL("DROP TABLE IF EXISTS Utilisateur");
+			database.execSQL(MySQLiteHelper.getDatabaseCreate1());
+		}
+		
 		
 		/**
 		 * convert a cursor to a utilisateur

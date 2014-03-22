@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 
 import com.pappl.mambiances.db.LocalDataSource;
+import com.pappl.mambiances.sync.Sync;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,8 +30,9 @@ public class Connexion extends Activity {
 	  Button btnSeConnecter;
 	  Button btnLinkToRegister;  
 	  public static LocalDataSource datasource;
-
-
+	  
+	  public static Context baseContext;
+	  
 	  public static final String PREFS_NAME = ".Preferences"; 
 	  private static final String PREF_LOGIN = "login";
 	  private static final String PREF_MOTDEPASSE = "mot de passe";
@@ -75,10 +79,20 @@ public class Connexion extends Activity {
 
 		  datasource = new LocalDataSource(this);
 		  
-
-		    
+		  baseContext = getApplicationContext();
+		
+		/********************************************************/
+		/* Charger la liste des utilisateurs de la base externe */
+		/********************************************************/
+		
+		datasource.open();
+		datasource.clearUtilisateur();
+		datasource.close();
+		
+		new Sync.LoadAllUsers().execute();
+		  
 	    /********************************/
-	    /* DÃ©finit le nom de l'Activity */
+	    /* Définit le nom de l'Activity */
 	    /********************************/
 
 	      setTitle("Connexion");

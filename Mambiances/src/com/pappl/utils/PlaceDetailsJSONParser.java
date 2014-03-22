@@ -1,4 +1,4 @@
-package com.pappl.mambiances;
+package com.pappl.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

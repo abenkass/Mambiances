@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pappl.mambiances.db.LocalDataSource;
+import com.pappl.utils.PlaceProvider;
  
 import android.location.Location;
 import android.location.LocationListener;
