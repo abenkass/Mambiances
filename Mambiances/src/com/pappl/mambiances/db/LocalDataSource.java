@@ -268,8 +268,8 @@ public  class LocalDataSource {
 		   * Getting user login status
 		   * return true if rows are there in table
 		   * */
-		  public int getRowCount() {
-		    String countQuery = "SELECT  * FROM " + MySQLiteHelper.TABLE_UTILISATEUR;
+		  public int getRowCount(String table) {
+		    String countQuery = "SELECT  * FROM " + table;
 		    Cursor cursor = database.rawQuery(countQuery, null);
 		    int rowCount = cursor.getCount();
 		    database.close();
@@ -388,6 +388,15 @@ public  class LocalDataSource {
 				System.out.println("Curseur deleted with id: "+ id);
 				database.delete(MySQLiteHelper.TABLE_CURSEUR, MySQLiteHelper.COLUMN_CURSEURID+" = "+ id, null);
 				database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ marqueurId, null);
+			}
+			
+			/**
+		     * deleting all Curseur
+		     */
+			public void clearCurseur(){
+				System.out.println("Curseur cleared");
+				database.execSQL("DROP TABLE IF EXISTS Curseur");
+				database.execSQL(MySQLiteHelper.getDatabaseCreate7());
 			}
 			
 			
@@ -588,6 +597,15 @@ public  class LocalDataSource {
 					System.out.println("Mot deleted with id: "+ id);
 					database.delete(MySQLiteHelper.TABLE_MOT, MySQLiteHelper.COLUMN_MOTID+" = "+ id, null);
 					database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ marqueurId, null);
+				}
+				
+				/**
+			     * deleting all Mot
+			     */
+				public void clearMots(){
+					System.out.println("Mot cleared");
+					database.execSQL("DROP TABLE IF EXISTS Mot");
+					database.execSQL(MySQLiteHelper.getDatabaseCreate5());
 				}
 				
 				
@@ -835,7 +853,15 @@ public  class LocalDataSource {
 					        c.close();
 					        return a1;
 					    }
-
+					    
+					    public Adresse getAdresseWithNom(String nom){
+					        Cursor c = database.query(MySQLiteHelper.TABLE_ADRESSE, allColumnsAdresse, MySQLiteHelper.COLUMN_ADRESSENOM + " = \"" + nom +"\"", null, null, null, null);
+					        c.moveToFirst();
+					        Adresse a1 = cursorToAdresse(c);
+					        c.close();
+					        return a1;
+					    }
+					    
 						/**
 						 * knowing an id we test if this adresse exists
 						 * @param id is the id of the adresse we ask
@@ -864,6 +890,14 @@ public  class LocalDataSource {
 							database.delete(MySQLiteHelper.TABLE_ADRESSE, MySQLiteHelper.COLUMN_ADRESSEID+" = "+ id, null);
 						}
 						
+						/**
+					     * deleting all Utilisateur
+					     */
+						public void clearAdresse(){
+							System.out.println("Adresse cleared");
+							database.execSQL("DROP TABLE IF EXISTS Adresse");
+							database.execSQL(MySQLiteHelper.getDatabaseCreate2());
+						}
 						
 						/**
 						 * convert a cursor to an adresse
@@ -1006,6 +1040,14 @@ public  class LocalDataSource {
 							database.delete(MySQLiteHelper.TABLE_IMAGE, MySQLiteHelper.COLUMN_IMAGEID+" = "+ id, null);
 						}
 						
+						/**
+					     * deleting all Places
+					     */
+						public void clearPlaces(){
+							System.out.println("Places cleared");
+							database.execSQL("DROP TABLE IF EXISTS Places");
+							database.execSQL(MySQLiteHelper.getDatabaseCreate3());
+						}
 						
 						/**
 						 * convert a cursor to an image
@@ -1142,7 +1184,15 @@ public  class LocalDataSource {
 						database.delete(MySQLiteHelper.TABLE_MARQUEUR, MySQLiteHelper.COLUMN_MARQUEURID+" = "+ id, null);
 					}
 
-
+					/**
+				     * deleting all Marqueur
+				     */
+					public void clearMarqueur(){
+						System.out.println("Marqueur cleared");
+						database.execSQL("DROP TABLE IF EXISTS Marqueur");
+						database.execSQL(MySQLiteHelper.getDatabaseCreate4());
+					}
+					
 					private Marqueur cursorToMarqueur(Cursor cursor) {
 					    Marqueur marqueur = new Marqueur();
 

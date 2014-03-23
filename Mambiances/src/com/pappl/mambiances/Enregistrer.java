@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pappl.mambiances.db.LocalDataSource;
+import com.pappl.mambiances.db.MySQLiteHelper;
 import com.pappl.mambiances.sync.Sync;
 import com.pappl.utils.JSONParser;
 
@@ -37,10 +38,7 @@ public class Enregistrer extends Activity {
 	  JSONParser jsonParser = new JSONParser();
 	  
 	  //url to the php class
-	  private static String url_create_user = "http://urbapp.ser-info-02.ec-nantes.fr/create_user.php";
-
-	  // JSON Node names
-	  private static final String TAG_SUCCESS = "success";
+	  private static String url_create_user = "http://mambiances.ser-info-02.ec-nantes.fr/create_user.php";
 	    
 	  private LocalDataSource datasource;
 	  
@@ -58,7 +56,7 @@ public class Enregistrer extends Activity {
 	    
 	    HashMap<String,Integer> maxIds = Sync.getMaxId();
 	    int maxIdEx = maxIds.get("Utilisateur");
-	    int maxIdInt = datasource.getRowCount();
+	    int maxIdInt = datasource.getRowCount(MySQLiteHelper.TABLE_UTILISATEUR);
 	    if(maxIdEx != maxIdInt){
 	    	new Sync.LoadAllUsers().execute();
 	    }
@@ -189,7 +187,7 @@ public class Enregistrer extends Activity {
 	 
 	            // check for success tag
 	            try {
-	                int success = json.getInt(TAG_SUCCESS);
+	                int success = json.getInt("success");
 	 
 	                if (success == 1) {
 	                	Toast.makeText(getApplicationContext(), 

@@ -19,6 +19,8 @@ public class ListeLieuxAdapter<T> extends ArrayAdapter<T> {
 	private final List<T> lieux;
 	
 	private String utilisateur;
+	private String nom;
+	private String adr;
 
 	public ListeLieuxAdapter(Context context, int layoutResourceId, ArrayList<T> lieux) { 
 	super(context, layoutResourceId, lieux); 
@@ -43,9 +45,10 @@ public class ListeLieuxAdapter<T> extends ArrayAdapter<T> {
 	
 	TextView text1 = (TextView) convertView.findViewById(android.R.id.text1);
 	TextView text2 = (TextView) convertView.findViewById(android.R.id.text2);	
-	
-	text1.setText(lieu.getNom());
-	text2.setText(lieu.getAdresse());
+	nom = lieu.getNom();
+	adr = lieu.getAdresse();
+	text1.setText(nom);
+	text2.setText(adr);
 	
 	View boutonDetailsLieu = convertView.findViewById(R.id.boutonDetailsLieu);
 	
@@ -59,6 +62,8 @@ public class ListeLieuxAdapter<T> extends ArrayAdapter<T> {
 			String utilisateur = lieu.getUtilisateur();
 			
 			Intent ambianceLieu = new Intent(context, AmbianceLieu.class);
+			ambianceLieu.putExtra("NOM", nom);
+  	      	ambianceLieu.putExtra("ADRESSE", adr);
   	      	ambianceLieu.putExtra("LATITUDE", latStr);
   	        ambianceLieu.putExtra("LONGITUDE", lngStr);
   	      	ambianceLieu.putExtra("LOGIN", utilisateur);

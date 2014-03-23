@@ -85,10 +85,6 @@ public class Connexion extends Activity {
 		/* Charger la liste des utilisateurs de la base externe */
 		/********************************************************/
 		
-		datasource.open();
-		datasource.clearUtilisateur();
-		datasource.close();
-		
 		new Sync.LoadAllUsers().execute();
 		  
 	    /********************************/

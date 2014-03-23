@@ -9,12 +9,249 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".AmbianceLieu" >
 
-    <ImageView
-        android:id="@+id/imageLieu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/shortDescrLieu"
-        android:src="@drawable/le_nid" />
+	<FrameLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="320dp" >
+
+	    <ImageView
+	        android:id="@+id/imageLieu"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:contentDescription="@string/shortDescrLieu"
+	        android:src="@drawable/le_nid" />
+	    
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	    	android:layout_height="match_parent"
+	    	android:orientation="vertical">
+		    	
+		    	<LinearLayout
+			    android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	android:orientation="horizontal">  
+		    	 
+			    <ImageButton
+				    android:id="@+id/moyAccueillant"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_orange1" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moySecurisant"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_violet" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyInspirant"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_orange2" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyIntime"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_pourpre" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyAnime"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_rouge" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyLuxueux"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_jaune" />
+			    
+			</LinearLayout>
+			
+	    	<View
+		        android:layout_width="1dp"
+		        android:layout_height="0dp"
+		        android:layout_weight="1" >
+		    </View>
+			
+		    <LinearLayout
+		        android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal">
+		        
+		       <ImageButton
+				    android:id="@+id/moyPalpitant"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_gravity="left"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_rouge1" />
+			       
+		       <ImageButton
+				    android:id="@+id/moyPersonnel"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_gravity="right"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_blanc" />
+		        
+		    </LinearLayout>
+		    
+		    <View
+		        android:layout_width="1dp"
+		        android:layout_height="0dp"
+		        android:layout_weight="1" >
+		    </View>
+		    
+		    <LinearLayout
+		        android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="horizontal">
+		        
+		       <ImageButton
+				    android:id="@+id/moyFormel"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_gravity="left"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_brun" />
+			       
+		       <ImageButton
+				    android:id="@+id/moyChill"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_gravity="right"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_vert" />
+		        
+		    </LinearLayout>
+		    
+		    <View
+		        android:layout_width="1dp"
+		        android:layout_height="0dp"
+		        android:layout_weight="1" >
+		    </View>
+		    	
+		    <LinearLayout 
+		        android:layout_width="match_parent"
+		    	android:layout_height="wrap_content"
+		    	android:orientation="horizontal">
+		    	
+			    <ImageButton
+				    android:id="@+id/moyCozy"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_orange" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyReposant"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_vert1" />
+			    
+			    <View
+			        android:layout_width="0dp"
+			        android:layout_height="1dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyBusiness"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_gris" />
+			    
+			    <View
+			        android:layout_width="1dp"
+			        android:layout_height="0dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyChaleureux"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_rouge2" />
+			    
+			    <View
+			        android:layout_width="1dp"
+			        android:layout_height="0dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyEnnuyeux"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_noir" />
+			    
+			    <View
+			        android:layout_width="1dp"
+			        android:layout_height="0dp"
+			        android:layout_weight="1" >
+			    </View>
+			    
+			    <ImageButton
+				    android:id="@+id/moyRomantique"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:alpha = "0"
+				    android:background="@drawable/circle_rose" />
+		
+			</LinearLayout>	    
+			 
+		    
+		    
+		</LinearLayout>
+	    
+    </FrameLayout>
     
     <View
     	android:layout_width="fill_parent"
@@ -34,7 +271,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="viewStart"
-        android:text="@string/typeLieu"
         android:textStyle="bold"
         android:textSize="16sp"/>
     
@@ -131,7 +367,7 @@
 	        android:layout_height="wrap_content"
 	        android:textAlignment="viewStart"
 	        android:text="@string/motPop1"
-	        android:textSize="16sp"/>
+	        android:textSize="24sp"/>
 	        
 	        <View
 	  			android:layout_width="10dp"
@@ -143,7 +379,7 @@
 	        android:layout_height="wrap_content"
 	        android:textAlignment="viewStart"
 	        android:text="@string/motPop2"
-	        android:textSize="16sp"/>
+	        android:textSize="24sp"/>
 	        
 	        <View
 	  			android:layout_width="10dp"
@@ -155,7 +391,103 @@
 	        android:layout_height="wrap_content"
 	        android:textAlignment="viewStart"
 	        android:text="@string/motPop3"
+	        android:textSize="24sp"/>
+	        
+	    </LinearLayout>
+	    
+	    <View
+	  			android:layout_width="match_parent"
+	  			android:layout_height="10dp"/>
+	    
+    	<LinearLayout
+	        android:id="@+id/motsAleatoires1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center">
+	        
+	        <TextView 
+	        android:id="@+id/motAlea1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
 	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motAlea2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motAlea3"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motAlea4"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:textSize="16sp"/>
+	        
+	    </LinearLayout>
+	    
+    	<View
+	  			android:layout_width="match_parent"
+	  			android:layout_height="10dp"/>
+	    
+    	<LinearLayout
+	        android:id="@+id/motsAleatoires2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center">
+	        
+	        <TextView 
+	        android:id="@+id/motAlea5"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motAlea6"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:textSize="16sp"/>
+	        
+	        <View
+	  			android:layout_width="10dp"
+	  			android:layout_height="match_parent"/>
+	        
+	        <TextView 
+	        android:id="@+id/motAlea7"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textAlignment="viewStart"
+	        android:textSize="16sp"/>
+	        
 	        
 	    </LinearLayout>
 </LinearLayout>

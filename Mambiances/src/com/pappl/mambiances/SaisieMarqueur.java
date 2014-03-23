@@ -1,19 +1,31 @@
 package com.pappl.mambiances;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.pappl.mambiances.db.Adresse;
 import com.pappl.mambiances.db.Curseur;
 import com.pappl.mambiances.db.LocalDataSource;
 import com.pappl.mambiances.db.Marqueur;
 import com.pappl.mambiances.db.Mot;
 import com.pappl.mambiances.db.Places;
 import com.pappl.mambiances.db.Utilisateur;
+import com.pappl.mambiances.sync.Sync;
+import com.pappl.utils.JSONParser;
 
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,6 +34,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,8 +48,7 @@ import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class SaisieMarqueur extends Activity {
-
+public class SaisieMarqueur extends Activity {	
 	/*
 	 * the button for validate the data capture
 	 */
@@ -62,9 +74,15 @@ public class SaisieMarqueur extends Activity {
 	
 	private LocalDataSource datasource;
 	
+	private ArrayList<String> aCreer;
+	private ArrayList<String> aSupprimer;
+	
+	private String nom;
+	private String adr;
 	private String latStr;
 	private String lngStr;
 	private String utilisateur;
+	private String adrIdStr;
 	private double lat;
 	private double lng;
 	
@@ -73,6 +91,20 @@ public class SaisieMarqueur extends Activity {
 	
 	private Curseur curseurAffiche;
 	
+	private ProgressDialog pDialog;
+	  
+	private JSONParser jsonParser = new JSONParser();
+	
+	private static String url_create_adresse = "http://mambiances.ser-info-02.ec-nantes.fr/create_adresse.php";
+
+	private static String url_create_places = "http://mambiances.ser-info-02.ec-nantes.fr/create_places.php";
+	
+	private static String url_create_mots = "http://mambiances.ser-info-02.ec-nantes.fr/create_mots.php";
+
+	private static String url_create_curseur = "http://mambiances.ser-info-02.ec-nantes.fr/create_curseur.php";
+
+	private static String url_update_curseur = "http://mambiances.ser-info-02.ec-nantes.fr/update_curseur.php";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,6 +114,8 @@ public class SaisieMarqueur extends Activity {
 		datasource.open();
 		
 		//Chargement des coordonnées et de l'utilisateur
+		nom = getIntent().getExtras().getString("NOM");
+		adr = getIntent().getExtras().getString("ADRESSE");
 		latStr = getIntent().getExtras().getString("LATITUDE");
 		lngStr = getIntent().getExtras().getString("LONGITUDE");
 		utilisateur = getIntent().getExtras().getString("LOGIN");
@@ -90,8 +124,6 @@ public class SaisieMarqueur extends Activity {
 		
 		lat = Double.parseDouble(latStr);
 		lng = Double.parseDouble(lngStr);
-		Places place = datasource.getPlaceWithLatLng(lat, lng);
-		placesId = place.getPlaces_id();
 		
 		mots = (EditText)findViewById(R.id.mots);
 		envoyer = (Button)findViewById(R.id.bouton_envoyer);
@@ -103,6 +135,33 @@ public class SaisieMarqueur extends Activity {
 		envoyer.setOnClickListener(envoyerListener);
 		
 		mots.addTextChangedListener(textWatcher);
+		
+		//Load all places, marqueurs, mots et curseurs
+		new Sync.LoadAllPlaces().execute();
+		new Sync.LoadAllMotsCurseurs().execute();
+		
+		//TODO créer une Adresse, créer un Places et alimenter
+    	Boolean exist = datasource.existPlaceWithLatLng(lat, lng);
+    	
+    	if (exist){
+    	}else{
+    		try {
+    			new CreateNewAdresse().execute();
+    			new Sync.LoadAllAdresse().execute();
+    			Adresse adresse = datasource.getAdresseWithNom(adr);
+    			long adrId = adresse.getAdresse_id();
+    			adrIdStr = String.valueOf(adrId);
+    			new CreateNewPlaces().execute();
+    			new Sync.LoadAllPlaces().execute();
+    		}
+    		catch(Exception e){
+			    e.printStackTrace();
+			}
+    
+    	}
+    	
+    	Places place = datasource.getPlaceWithLatLng(lat, lng);
+		placesId = place.getPlaces_id();
 		
 		//Afficher mots déjà notés
 		Mot[] mesMots = datasource.getMesMots(utilisateurId, placesId);
@@ -222,7 +281,6 @@ public class SaisieMarqueur extends Activity {
 	private OnClickListener envoyerListener = new OnClickListener() {
 	@Override
 	public void onClick(View v){
-		datasource.open();
 		
 		//Créer mots
 		String m= mots.getText().toString();
@@ -234,44 +292,380 @@ public class SaisieMarqueur extends Activity {
 		if (liste.size() == 0){
 			Toast.makeText(SaisieMarqueur.this, "T'as pas rentré de mots galopin!", Toast.LENGTH_LONG).show();
 		}else{
-			//supprimer les mots présents dans la base de données
+			datasource.open();
 			Mot[] mesMots = datasource.getMesMots(utilisateurId, placesId);
-			for (Mot mot : mesMots){
-				long marqueur_id = mot.getMarqueur_id();
-				datasource.deleteMot(mot);
-				Marqueur m1 = datasource.getMarqueurWithId(marqueur_id);
-				datasource.deleteMarqueur(m1);
-			}
+			datasource.close();
 			//entrer (ou réentrer) les nouveaux mots
+			Boolean exist = false;
 			for (int i=0; i < liste.size(); i++) {
-				result.setText(result.getText() + "'" + liste.get(i).toString() + "' ");
-				Marqueur marqueur = datasource.createMarqueur(placesId, utilisateurId);
-				long marqueurId = marqueur.getMarqueur_id();
-				datasource.createMot(liste.get(i).toString(), marqueurId);
+				String mot = liste.get(i);
+				for(int j = 0; j < mesMots.length; j++){
+					if(mot == mesMots[j].getMot()){
+						exist = true;
+					}
+				}
+				if(!exist){
+					aCreer.add(mot);
+				}
 			}
+			exist = false;
+			//supprimer les mots présents dans la base de données
+			for (int i=0; i < mesMots.length; i++) {
+				String mot = mesMots[i].getMot();
+				for(int j = 0; j < liste.size(); j++){
+					if(mot == liste.get(j)){
+						exist = true;
+					}
+				}
+				if(!exist){
+					aSupprimer.add(mot);
+					
+				}
+			}
+			
+			new CreateNewMots().execute();
+			//TODO implémenter la suppression de mots
+			//new SupprimerMots().execute();
 		}
 		
 		//Créer curseur
 		if(changed){
 			if(nouveauCurseur){
-				Marqueur marqueur = datasource.createMarqueur(placesId, utilisateurId);
-				long marqueurId = marqueur.getMarqueur_id();
-				String nomStr = (String) nomSeekBar.getText();
-				datasource.createCurseur(valSeekBar, nomStr, marqueurId);
+				new CreateNewCurseur().execute();
 			}else{
-				datasource.updateCurseur(curseurAffiche, valSeekBar);
+				new UpdateCurseur().execute();
 			}
 		}else{
 			Toast.makeText(SaisieMarqueur.this, "T'as oublié de donner une valeur à ton curseur", Toast.LENGTH_LONG).show();
 		}
 		//test
 		result.setText("Vous avez saisi le(s) mot(s) :");
-				
-		datasource.close();
 		
 		if (changed && liste.size() != 0){
 			finish();
 		}
+		
+		new Sync.LoadAllMotsCurseurs();
 	}
 	};
+	
+	class CreateNewAdresse extends AsyncTask<String, String, String> {
+		  
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SaisieMarqueur.this);
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+ 
+        /**
+         * Creating adresse
+         * */
+        protected String doInBackground(String... args) {
+            String adresse_nom = adr;
+ 
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("adresse_nom", adresse_nom));
+ 
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_create_adresse,
+                    "POST", params);
+ 
+            // check log cat fro response
+            Log.d("Create Response", json.toString());
+ 
+            return null;
+        }
+ 
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+ 
+    }
+	
+	class CreateNewPlaces extends AsyncTask<String, String, String> {
+		  
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SaisieMarqueur.this);
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+ 
+        /**
+         * Creating places
+         * */
+        protected String doInBackground(String... args) {
+            String places_nom = nom;
+            String places_lat = latStr;
+            String places_lng = lngStr;
+            String adresse_id = adrIdStr;
+ 
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("places_nom", places_nom));
+            params.add(new BasicNameValuePair("places_latitude", places_lat));
+            params.add(new BasicNameValuePair("places_longitude", places_lng));
+            params.add(new BasicNameValuePair("adresse_id", adresse_id));
+ 
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_create_places,
+                    "POST", params);
+ 
+            // check log cat fro response
+            Log.d("Create Response", json.toString());
+ 
+            return null;
+        }
+ 
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+ 
+    }
+	
+	class CreateNewMots extends AsyncTask<String, String, String> {
+		  
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SaisieMarqueur.this);
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+ 
+        /**
+         * Creating mots
+         * */
+        
+        //TODO
+        protected String doInBackground(String... args) {
+        	String places_id = String.valueOf(placesId);
+        	String utilisateur_id = String.valueOf(utilisateurId);
+        	
+        	String JSonComplete = "";
+        	int size = aCreer.size();
+        	for(int i=0; i< size - 1; i++){
+        		JSonComplete += "{\"places_id\" : " + places_id + ", " +
+        						"\"utilisateur_id\" : " + utilisateur_id + ", " +
+        						"\"mot\" : " + aCreer.get(i) + "},";
+        	}
+        	JSonComplete += "{\"places_id\" : " + places_id + ", " +
+					"\"utilisateur_id\" : " + utilisateur_id + ", " +
+					"\"mot\" : " + aCreer.get(size-1) + "}";
+        	
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("mots", JSonComplete));
+ 
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_create_mots,
+                    "POST", params);
+ 
+            // check log cat fro response
+            Log.d("Create Response", json.toString());
+ 
+            return null;
+        }
+ 
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+ 
+    }
+	
+//TODO implémenter la suppression de mots
+//	class SupprimerMots extends AsyncTask<String, String, String> {
+//		  
+//        /**
+//         * Before starting background thread Show Progress Dialog
+//         **/
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            pDialog = new ProgressDialog(SaisieMarqueur.this);
+//            pDialog.setIndeterminate(false);
+//            pDialog.setCancelable(true);
+//            pDialog.show();
+//        }
+// 
+//        /**
+//         * Creating mots
+//         * */
+//        
+//       
+//        protected String doInBackground(String... args) {
+//        	String places_id = String.valueOf(placesId);
+//        	String utilisateur_id = String.valueOf(utilisateurId);
+//        	
+//        	String JSonComplete = "";
+//        	int size = aSupprimer.size();
+//        	for(int i=0; i< size - 1; i++){
+//        		JSonComplete += "{\"places_id\" : " + places_id + ", " +
+//        						"\"utilisateur_id\" : " + utilisateur_id + ", " +
+//        						"\"mot\" : " + aCreer.get(i) + "},";
+//        	}
+//        	JSonComplete += "{\"places_id\" : " + places_id + ", " +
+//					"\"utilisateur_id\" : " + utilisateur_id + ", " +
+//					"\"mot\" : " + aCreer.get(size-1) + "}";
+//        	
+//            // Building Parameters
+//            List<NameValuePair> params = new ArrayList<NameValuePair>();
+//            params.add(new BasicNameValuePair("mots", JSonComplete));
+// 
+//            // getting JSON Object
+//            // Note that create product url accepts POST method
+//            JSONObject json = jsonParser.makeHttpRequest(url_create_mots,
+//                    "POST", params);
+// 
+//            // check log cat fro response
+//            Log.d("Create Response", json.toString());
+// 
+//            return null;
+//        }
+// 
+//        /**
+//         * After completing background task Dismiss the progress dialog
+//         * **/
+//        protected void onPostExecute(String file_url) {
+//            // dismiss the dialog once done
+//            pDialog.dismiss();
+//        }
+// 
+//    }
+	
+	class CreateNewCurseur extends AsyncTask<String, String, String> {
+		  
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SaisieMarqueur.this);
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+ 
+        /**
+         * Creating curseur
+         * */
+        
+        protected String doInBackground(String... args) {
+        	String places_id = String.valueOf(placesId);
+        	String utilisateur_id = String.valueOf(utilisateurId);
+        	String valCurseur = String.valueOf(valSeekBar);
+
+        	String JSonComplete = "{\"places_id\" : " + places_id + ", " +
+        						"\"utilisateur_id\" : " + utilisateur_id + ", " +
+        						"\"curseur_nom\" : " + nomSeekBar.getText() + ", " +
+        						"\"curseur_valeur\" : " + valCurseur + "}";
+        	
+        	
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("curseur", JSonComplete));
+ 
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_create_curseur,
+                    "POST", params);
+ 
+            // check log cat fro response
+            Log.d("Create Response", json.toString());
+ 
+            return null;
+        }
+ 
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+ 
+    }
+	
+	class UpdateCurseur extends AsyncTask<String, String, String> {
+		  
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(SaisieMarqueur.this);
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+ 
+        /**
+         * Creating curseur
+         * */
+        
+        protected String doInBackground(String... args) {
+        	String valCurseur = String.valueOf(valSeekBar);
+        	String curseur_nom = curseurAffiche.getCurseur_nom();
+
+        	String JSonComplete = "{\"curseur_nom\" : " + curseur_nom + ", " +
+        						"\"curseur_nom\" : " + valCurseur + "}";
+        	
+        	
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("curseur", JSonComplete));
+ 
+            // getting JSON Object
+            // Note that create product url accepts POST method
+            JSONObject json = jsonParser.makeHttpRequest(url_update_curseur,
+                    "POST", params);
+ 
+            // check log cat fro response
+            Log.d("Create Response", json.toString());
+ 
+            return null;
+        }
+ 
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+ 
+    }
 }

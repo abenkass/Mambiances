@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import com.google.android.gms.maps.model.LatLng;
 import com.pappl.mambiances.db.Adresse;
 import com.pappl.mambiances.db.LocalDataSource;
+import com.pappl.utils.JSONParser;
 
 import android.location.Location;
 import android.location.LocationManager;
@@ -45,6 +46,7 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import android.widget.TwoLineListItem;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -193,21 +195,6 @@ public class ListeLieuxActivity extends Activity {
 		    	lieu.setLongitude(lngi);
 		    	lieux.add(lieu);
 		    	
-		    	//TODO créer une Adresse, créer un Places et alimenter
-		    	Boolean exist = datasource.existPlaceWithLatLng(lati, lngi);
-		    	
-		    	if (exist){
-		    	}else{
-		    		try {
-		    			Adresse adresse = datasource.createAdresse(adr);
-		    			long adrId = adresse.getAdresse_id();
-		    			datasource.createPlace (nom, lati, lngi, adrId);
-		    		}
-		    		catch(Exception e){
-					    e.printStackTrace();
-					}
-		    
-		    	}
 		    }
 		    ListeLieuxAdapter<Lieu> lieuxAdapter = new ListeLieuxAdapter<Lieu>(getApplicationContext(), 
 		      R.layout.simple_list_item_2_button, lieux);
@@ -218,11 +205,15 @@ public class ListeLieuxActivity extends Activity {
 
 		    	   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		    		  System.out.println("pushed");
+		    		  String nom = lieuxAdresses[position][0];
+		    		  String adr = lieuxAdresses[position][1];
 		    	      double lat = lieuxAdressesD[position][0];
 		    	      double lng = lieuxAdressesD[position][1];
 		    	      String latStr = String.valueOf(lat);
 		    	      String lngStr = String.valueOf(lng);
 		    	      Intent saisieMarqueur = new Intent(getApplicationContext(), SaisieMarqueur.class);
+		    	      saisieMarqueur.putExtra("NOM", nom);
+		    	      saisieMarqueur.putExtra("ADRESSE", adr);
 		    	      saisieMarqueur.putExtra("LATITUDE", latStr);
 		    	      saisieMarqueur.putExtra("LONGITUDE", lngStr);
 		    	      saisieMarqueur.putExtra("LOGIN", utilisateur);
@@ -263,7 +254,5 @@ public class ListeLieuxActivity extends Activity {
 	    
 	    
 	}
-	    
-
 
 }
